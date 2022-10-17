@@ -28,46 +28,62 @@ const readWindowSize = function(){
 }
 
 const setStyles = function(){
+    const menuMin = 0.3;
+    var marg = (wHeight*0.01);
+
+    //default
+    var canH = (wHeight-marg*2);
+    var canW = canH;
+    var canT = marg;
+    var canL = marg;
+    var menW = (wWidth - canW - marg*3);
+    var menH = wHeight - marg*2;
+    var menL = canW + marg*2
+
     if(orien == "horizontal"){
-        
-        const menuMin = 0.3;
-        var marg = (wHeight*0.01);
-
-        
-        var canH = (wHeight-marg*2);
-        var canW = canH;
-        var menW = (wWidth - canW - marg*3);
-        var menH = wHeight - marg*2;
-        var menL = canW + marg*2
-        
-
-        if(wWidth > (wHeight + marg + menuMin*wWidth) ){
-            menudiv.style.backgroundColor = "#ff0000"
-            
+        if(wWidth > (wHeight + marg + menuMin*wWidth)){
+            //normal (default)
         }else{
-            menudiv.style.backgroundColor = "#0000ff"
+            //squeeze
+            menW = wWidth*menuMin;
+            canW = wWidth - menW - marg*3;
+            canH = canW;
+            menL = canW + marg*2
+        }
+    }else{
+        //vertical
+        if(wHeight > (wWidth + marg + menuMin*wHeight)){
+            //normal
+            canW = (wWidth-marg*2);
+            canH = canW;
+            menH = (wHeight - canH - marg*3);
+            menW = wWidth - marg*2;
+            menL = marg;
+            canT = menH + marg*2;
+        }else{
+            //squeeze
+            menH = wHeight*menuMin;
+            menW = wWidth - marg*2
+            menL = marg;
+            canH = wHeight - menH - marg*3;
+            canW = canH;
+            canT = menH + marg*2;
+            canL = wWidth/2 - canW/2;
         }
 
-        canvas.style.width = canW.toString()+"px";
-        canvas.style.height = canH.toString()+"px";
-        
-        
-        menudiv.style.left = menL.toString()+"px";
-        
-        menudiv.style.width = menW.toString()+"px";
-        menudiv.style.height = menH.toString()+"px";
-
-        menudiv.style.marginTop = marg.toString()+"px";
-        canvas.style.margin = marg.toString()+"px";
-
-    }else{
-        canvas.style.height = "98vw";
-        canvas.style.width = "98vw";
-        canvas.style.marginLeft = "1vw";
-        canvas.style.marginTop = "calc(100vh - 99vw)";
     }
 
-   
+    canvas.style.width = canW.toString()+"px";
+    canvas.style.height = canH.toString()+"px";
+    canvas.style.marginLeft = canL.toString()+"px";
+    canvas.style.marginTop = canT.toString()+"px";
+    canvas.style.marginRight = marg.toString()+"px";
+
+    menudiv.style.left = menL.toString()+"px";
+    menudiv.style.width = menW.toString()+"px";
+    menudiv.style.height = menH.toString()+"px";
+    menudiv.style.marginTop = marg.toString()+"px";
+    
 }
 
 const checkorien = function(){
