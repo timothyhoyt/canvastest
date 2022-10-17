@@ -28,14 +28,38 @@ const readWindowSize = function(){
 }
 
 const setStyles = function(){
-    if(orientation == "horizontal"){
-        canvas.style.width = "98vh";
-        canvas.style.height = "98vh";
-        canvas.style.marginLeft = "1vh";
-        canvas.style.marginTop = "1vh";
-        menudiv.style.width = "10vw";
-        menudiv.style.height = "10vw";
+    if(orien == "horizontal"){
         
+        const menuMin = 0.3;
+        var marg = (wHeight*0.01);
+
+        
+        var canH = (wHeight-marg*2);
+        var canW = canH;
+        var menW = (wWidth - canW - marg*3);
+        var menH = wHeight - marg*2;
+        var menL = canW + marg*2
+        
+
+        if(wWidth > (wHeight + marg + menuMin*wWidth) ){
+            menudiv.style.backgroundColor = "#ff0000"
+            
+        }else{
+            menudiv.style.backgroundColor = "#0000ff"
+        }
+
+        canvas.style.width = canW.toString()+"px";
+        canvas.style.height = canH.toString()+"px";
+        
+        
+        menudiv.style.left = menL.toString()+"px";
+        
+        menudiv.style.width = menW.toString()+"px";
+        menudiv.style.height = menH.toString()+"px";
+
+        menudiv.style.marginTop = marg.toString()+"px";
+        canvas.style.margin = marg.toString()+"px";
+
     }else{
         canvas.style.height = "98vw";
         canvas.style.width = "98vw";
@@ -46,19 +70,16 @@ const setStyles = function(){
    
 }
 
-const checkOrientation = function(){
-    const prevOrientation = orientation
-    if(wWidth >= wHeight) {orientation = "horizontal"}
-    else {orientation = "vertical"}
-    if (prevOrientation != orientation){
-        console.log("orientation changed to:",orientation)
-        setStyles()
-    }
+const checkorien = function(){
+    const prevorien = orien
+    if(wWidth >= wHeight) {orien = "horizontal"}
+    else {orien = "vertical"}
+    setStyles()
 }
 
 const sizeCanvas = function(){
     readWindowSize()
-    checkOrientation()    
+    checkorien()    
     brect = canvas.getBoundingClientRect();
     dvp = window.devicePixelRatio || 1
     canvas.width = (brect.right - brect.left) * dvp
@@ -81,7 +102,7 @@ const canvas = document.createElement('canvas');
 const ctx = canvas.getContext("2d");
 const menudiv = document.createElement('div')
 var brect, dvp, cAR, wAR, wWidth, wHeight
-var orientation = "horizontal"
+var orien = "horizontal"
 
 
 ////////////////
@@ -94,8 +115,8 @@ maindiv.appendChild(menudiv)
 canvas.id = "theCanvas";
 // canvas.style.position = "absolute"
 menudiv.id = "theMenu";
-
-checkOrientation()
+menudiv.style.position = "absolute";
+checkorien()
 setStyles()
 sizeCanvas()
 window.addEventListener('resize', sizeCanvas, true);
