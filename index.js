@@ -4,15 +4,23 @@
 
 //Main Animation Loop
 const mainLoop = function(timeStamp){
-    
+
+    //constants
+    const C1 = "rgba(200, 200, 100, 0.5)";
+    const C2 = "rgba(100, 150, 200, 0.5)";
+    const C3 = "rgba(200,100,255,0.5)";
+    const C4 = "rgba(150, 100, 200, 0.5)";
+
     //clearframe
     ctx.fillStyle = "rgba(0, 0, 0, 0.2)";
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.fillRect(0, 0, cWidth, cHeight);
 
     //draw
-    var rectC = (mouseDownCan)? "rgba(100, 150, 200, 0.5)" : "rgba(150, 100, 200, 0.5)"
-    
-    fillRectRel(25, 25, 25, 25, rectC);
+    const rec1 = [25,25,25,25]
+    var rectC = mouseDownCan? mouseOverRect(rec1)? C1 : C2 : mouseOverRect(rec1)? C3 : C4
+
+    fillRectRel(rec1, rectC);
+
 
     //cursor
     fillCirRel(mX, mY, 0.5, 'rgba(255,255,255,0.5)')
@@ -26,6 +34,9 @@ const mainLoop = function(timeStamp){
 //functions
 ///////////////////
 
+const mouseOverRect = function(rect){
+    return mX >= rect[0] && mX <= (rect[0]+rect[2]) && mY >= rect[1] && mY <= (rect[1]+rect[3])
+}
 
 onmousedown = (e) => {
     if(e.button === 0){
@@ -56,7 +67,6 @@ onmouseup = (e) => {
 }
 
 onmousemove = (e) => {
-    // console.log(e.buttons)
     mcX = e.clientX; mcY = e.clientY;
     const cW = (brect.right-brect.left);
     const cH = (brect.bottom-brect.top);
@@ -117,33 +127,29 @@ const setStyles = function(){
 
 const checkorien = function(){
     const prevorien = orien;
-    if(wWidth >= wHeight) {orien = "horizontal"}
-    else {orien = "vertical"}
-    setStyles()
+    if(wWidth >= wHeight) {orien = "horizontal"} else {orien = "vertical"}; setStyles()
 }
 
 const sizeCanvas = function(){
     readWindowSize(); checkorien(); 
     brect = canvas.getBoundingClientRect();
     dvp = window.devicePixelRatio || 1;
-    canvas.width = (brect.right - brect.left) * dvp;
-    canvas.height = (brect.bottom - brect.top) * dvp; 
-    cAR = canvas.width/canvas.height
+    cWidth = (brect.right - brect.left) * dvp;
+    cHeight = (brect.bottom - brect.top) * dvp; 
+    canvas.width = cWidth; canvas.height = cHeight;
+    cAR = cWidth/cHeight
 }
 
-const fillRectRel = function(x,y,w,h,c){
+const fillRectRel = function(rect,c){
     ctx.fillStyle = c;
-    ctx.fillRect(x/100*canvas.width,y/100*canvas.height,w/100*canvas.width,h/100*canvas.height);
+    ctx.fillRect(rect[0]/100*cWidth,rect[1]/100*cHeight,rect[2]/100*cWidth,rect[3]/100*cHeight);
 }
 
 const fillCirRel = function (x,y,r,c){
     ctx.beginPath();
-    ctx.arc(x/100*canvas.width, y/100*canvas.height, r/100*canvas.height, 0, 2 * Math.PI, false);
-    ctx.fillStyle = c;
-    ctx.fill();
-    ctx.lineWidth = 1;
-    ctx.strokeStyle = 'rgba(0,0,0,0)';
-    ctx.stroke();
+    ctx.arc(x/100*cWidth, y/100*cHeight, r/100*cHeight, 0, 2 * Math.PI, false);
+    ctx.fillStyle = c;  ctx.fill(); ctx.lineWidth = 1;
+    ctx.strokeStyle = 'rgba(0,0,0,0)';  ctx.stroke();
 }
 
 
@@ -155,9 +161,8 @@ const maindiv = document.getElementsByTagName('main')[0];
 const canvas = document.createElement('canvas');
 const ctx = canvas.getContext("2d");
 const menudiv = document.getElementById('theMenu')
-var brect, dvp, cAR, wWidth, wHeight, mcX, mcY, mX, mY, mcdX, mcdY, mdX, mdY, mcuX, mcuY, muX, muY;
-var mouseDownCan = false;
-var orien = "horizontal";
+var brect, dvp, cAR, wWidth, wHeight, cWidth, cHeight, mcX, mcY, mX, mY, mcdX, mcdY, mdX, mdY, mcuX, mcuY, muX, muY;
+var mouseDownCan = false; var orien = "horizontal";
 
 
 ////////////////
@@ -166,8 +171,7 @@ var orien = "horizontal";
 
 readWindowSize();
 maindiv.appendChild(canvas);
-canvas.id = "theCanvas";
-canvas.oncontextmenu = () => {return false;}
+canvas.id = "theCanvas"; canvas.oncontextmenu = () => {return false;}
 checkorien(); setStyles(); sizeCanvas();
 window.addEventListener('resize', sizeCanvas, true);
 window.requestAnimationFrame(mainLoop);
