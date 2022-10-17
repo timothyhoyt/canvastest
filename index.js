@@ -10,7 +10,9 @@ const mainLoop = function(timeStamp){
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
     //draw
-    fillRectRel(25, 25, 25, 25, "rgba(100,150,200,0.5)");
+    var rectC = (mouseDown)? "rgba(100, 150, 200, 0.5)" : "rgba(150, 100, 200, 0.5)"
+    
+    fillRectRel(25, 25, 25, 25, rectC);
 
     //cursor
     fillCirRel(mX, mY, 0.5, 'rgba(255,255,255,0.5)')
@@ -26,27 +28,38 @@ const mainLoop = function(timeStamp){
 
 
 onmousedown = (e) => {
-    // console.log(e)
-    mcdX = e.clientX; mcdY = e.clientY;
-    const cW = (brect.right-brect.left); const cH = (brect.bottom-brect.top);
-    mdX = 100*(mcdX - brect.left)/cW; mdY = 100*(mcdY - brect.top)/cH;
-    mdX = (mdX < 0)? -1 : mdX;  mdX = (mdX > 100)? -1 : mdX;
-    mdY = (mdY < 0)? -1 : mdY;  mdY = (mdY > 100)? -1 : mdY;
-    if((mdX >= 0) && (mdY >= 0)) { onMouseDownCanvas(); }
+    if(e.button === 0){
+        mcdX = e.clientX; mcdY = e.clientY;
+        const cW = (brect.right-brect.left); const cH = (brect.bottom-brect.top);
+        mdX = 100*(mcdX - brect.left)/cW; mdY = 100*(mcdY - brect.top)/cH;
+        mdX = (mdX < 0)? -1 : mdX;  mdX = (mdX > 100)? -1 : mdX;
+        mdY = (mdY < 0)? -1 : mdY;  mdY = (mdY > 100)? -1 : mdY;
+        if((mdX >= 0) && (mdY >= 0)) { onMouseDownCanvas(); }
+    }
 }
 
 const onMouseDownCanvas = function(){
-    console.log(mdX, mdY);
+    // console.log(mdX, mdY);
+    mouseDown = true;
+}
+
+onmouseup = (e) => {
+    console.log("mouseup")
+    mcuX = e.clientX; mcuY = e.clientY;
+    const cW = (brect.right-brect.left); const cH = (brect.bottom-brect.top);
+    muX = 100*(mcuX - brect.left)/cW; muY = 100*(mcuY - brect.top)/cH;
+    muX = (muX < 0)? -1 : muX;  muX = (muX > 100)? -1 : muX;
+    mouseDown = false;
 }
 
 onmousemove = (e) => {
+    console.log(e.buttons)
     mcX = e.clientX; mcY = e.clientY;
     const cW = (brect.right-brect.left);
     const cH = (brect.bottom-brect.top);
     mX = 100*(mcX - brect.left)/cW; mY = 100*(mcY - brect.top)/cH;
     mX = (mX < 0)? 0 : mX;  mX = (mX > 100)? 100 : mX;
     mY = (mY < 0)? 0 : mY;  mY = (mY > 100)? 100 : mY;
-    // console.log(mX,mY)
 }
 
 const readWindowSize = function(){
@@ -138,7 +151,8 @@ const maindiv = document.getElementsByTagName('main')[0];
 const canvas = document.createElement('canvas');
 const ctx = canvas.getContext("2d");
 const menudiv = document.createElement('div');
-var brect, dvp, cAR, wWidth, wHeight, mcX, mcY, mX, mY, mcdX, mcdY, mdX, mdY;
+var brect, dvp, cAR, wWidth, wHeight, mcX, mcY, mX, mY, mcdX, mcdY, mdX, mdY, mcuX, mcuY, muX, muY;
+var mouseDown = false;
 var orien = "horizontal";
 
 
@@ -150,6 +164,7 @@ readWindowSize();
 maindiv.appendChild(canvas);
 maindiv.appendChild(menudiv);
 canvas.id = "theCanvas";
+canvas.oncontextmenu = () => {return false;}
 menudiv.id = "theMenu";
 menudiv.style.position = "absolute";
 checkorien(); setStyles(); sizeCanvas();
