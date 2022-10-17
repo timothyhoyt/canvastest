@@ -13,6 +13,7 @@ main {
 
 #theMenu{
     background-color: #0d00ff;
+    position: absolute;
 }
   
 #theCanvas{

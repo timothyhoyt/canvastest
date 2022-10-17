@@ -83,7 +83,8 @@ const setStyles = function(){
         if(wWidth < (wHeight + marg + menuMin*wWidth)){
             // horizontal squeeze
             menW = wWidth*menuMin; canW = wWidth - menW - marg*3;
-            canH = canW; menL = canW + marg*2
+            canH = canW; menL = canW + marg*2;
+            canT = wHeight/2 - canH/2;
         }
     }else{
         //vertical
@@ -153,7 +154,7 @@ const fillCirRel = function (x,y,r,c){
 const maindiv = document.getElementsByTagName('main')[0];
 const canvas = document.createElement('canvas');
 const ctx = canvas.getContext("2d");
-const menudiv = document.createElement('div');
+const menudiv = document.getElementById('theMenu')
 var brect, dvp, cAR, wWidth, wHeight, mcX, mcY, mX, mY, mcdX, mcdY, mdX, mdY, mcuX, mcuY, muX, muY;
 var mouseDownCan = false;
 var orien = "horizontal";
@@ -165,11 +166,8 @@ var orien = "horizontal";
 
 readWindowSize();
 maindiv.appendChild(canvas);
-maindiv.appendChild(menudiv);
 canvas.id = "theCanvas";
 canvas.oncontextmenu = () => {return false;}
-menudiv.id = "theMenu";
-menudiv.style.position = "absolute";
 checkorien(); setStyles(); sizeCanvas();
 window.addEventListener('resize', sizeCanvas, true);
 window.requestAnimationFrame(mainLoop);
