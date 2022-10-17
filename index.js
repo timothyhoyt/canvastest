@@ -25,6 +25,20 @@ const mainLoop = function(timeStamp){
 ///////////////////
 
 
+onmousedown = (e) => {
+    // console.log(e)
+    mcdX = e.clientX; mcdY = e.clientY;
+    const cW = (brect.right-brect.left); const cH = (brect.bottom-brect.top);
+    mdX = 100*(mcdX - brect.left)/cW; mdY = 100*(mcdY - brect.top)/cH;
+    mdX = (mdX < 0)? -1 : mdX;  mdX = (mdX > 100)? -1 : mdX;
+    mdY = (mdY < 0)? -1 : mdY;  mdY = (mdY > 100)? -1 : mdY;
+    if((mdX >= 0) && (mdY >= 0)) { onMouseDownCanvas(); }
+}
+
+const onMouseDownCanvas = function(){
+    console.log(mdX, mdY);
+}
+
 onmousemove = (e) => {
     mcX = e.clientX; mcY = e.clientY;
     const cW = (brect.right-brect.left);
@@ -32,7 +46,7 @@ onmousemove = (e) => {
     mX = 100*(mcX - brect.left)/cW; mY = 100*(mcY - brect.top)/cH;
     mX = (mX < 0)? 0 : mX;  mX = (mX > 100)? 100 : mX;
     mY = (mY < 0)? 0 : mY;  mY = (mY > 100)? 100 : mY;
-    console.log(mX,mY)
+    // console.log(mX,mY)
 }
 
 const readWindowSize = function(){
@@ -124,7 +138,7 @@ const maindiv = document.getElementsByTagName('main')[0];
 const canvas = document.createElement('canvas');
 const ctx = canvas.getContext("2d");
 const menudiv = document.createElement('div');
-var brect, dvp, cAR, wWidth, wHeight, mcX, mcY, mX, mY;
+var brect, dvp, cAR, wWidth, wHeight, mcX, mcY, mX, mY, mcdX, mcdY, mdX, mdY;
 var orien = "horizontal";
 
 
