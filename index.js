@@ -10,7 +10,10 @@ const mainLoop = function(timeStamp){
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
     //draw
-    fillRectRel(25,25,25,25,"rgba(100,150,200,0.5)");
+    fillRectRel(25, 25, 25, 25, "rgba(100,150,200,0.5)");
+
+    //cursor
+    fillCirRel(mX, mY, 0.5, 'rgba(255,255,255,0.5)')
 
     //next frame
     window.requestAnimationFrame(mainLoop);
@@ -102,6 +105,17 @@ const fillRectRel = function(x,y,w,h,c){
     ctx.fillRect(x/100*canvas.width,y/100*canvas.height,w/100*canvas.width,h/100*canvas.height);
 }
 
+const fillCirRel = function (x,y,r,c){
+    ctx.beginPath();
+    ctx.arc(x/100*canvas.width, y/100*canvas.height, r/100*canvas.height, 0, 2 * Math.PI, false);
+    ctx.fillStyle = c;
+    ctx.fill();
+    ctx.lineWidth = 1;
+    ctx.strokeStyle = 'rgba(0,0,0,0)';
+    ctx.stroke();
+}
+
+
 ////////////////
 //globals
 ////////////////
@@ -126,5 +140,4 @@ menudiv.id = "theMenu";
 menudiv.style.position = "absolute";
 checkorien(); setStyles(); sizeCanvas();
 window.addEventListener('resize', sizeCanvas, true);
-// window.addEventListener('mousemove', mouseMove(e), true);
 window.requestAnimationFrame(mainLoop);
