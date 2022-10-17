@@ -10,7 +10,7 @@ const mainLoop = function(timeStamp){
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
     //draw
-    var rectC = (mouseDown)? "rgba(100, 150, 200, 0.5)" : "rgba(150, 100, 200, 0.5)"
+    var rectC = (mouseDownCan)? "rgba(100, 150, 200, 0.5)" : "rgba(150, 100, 200, 0.5)"
     
     fillRectRel(25, 25, 25, 25, rectC);
 
@@ -39,21 +39,24 @@ onmousedown = (e) => {
 }
 
 const onMouseDownCanvas = function(){
-    // console.log(mdX, mdY);
-    mouseDown = true;
+    console.log("Canvas Clicked:",mdX, mdY);
+    mouseDownCan = true;
 }
 
 onmouseup = (e) => {
-    console.log("mouseup")
-    mcuX = e.clientX; mcuY = e.clientY;
-    const cW = (brect.right-brect.left); const cH = (brect.bottom-brect.top);
-    muX = 100*(mcuX - brect.left)/cW; muY = 100*(mcuY - brect.top)/cH;
-    muX = (muX < 0)? -1 : muX;  muX = (muX > 100)? -1 : muX;
-    mouseDown = false;
+    if(mouseDownCan){
+        mcuX = e.clientX; mcuY = e.clientY;
+        const cW = (brect.right-brect.left); const cH = (brect.bottom-brect.top);
+        muX = 100*(mcuX - brect.left)/cW; muY = 100*(mcuY - brect.top)/cH;
+        muX = (muX < 0)? 0 : muX;  muX = (muX > 100)? 100 : muX;
+        muY = (muY < 0)? 0 : muY;  muY = (muY > 100)? 100 : muY;
+        mouseDownCan = false;
+        console.log("Canvas Unclick:",muX,muY)
+    }
 }
 
 onmousemove = (e) => {
-    console.log(e.buttons)
+    // console.log(e.buttons)
     mcX = e.clientX; mcY = e.clientY;
     const cW = (brect.right-brect.left);
     const cH = (brect.bottom-brect.top);
@@ -152,7 +155,7 @@ const canvas = document.createElement('canvas');
 const ctx = canvas.getContext("2d");
 const menudiv = document.createElement('div');
 var brect, dvp, cAR, wWidth, wHeight, mcX, mcY, mX, mY, mcdX, mcdY, mdX, mdY, mcuX, mcuY, muX, muY;
-var mouseDown = false;
+var mouseDownCan = false;
 var orien = "horizontal";
 
 
