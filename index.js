@@ -1,29 +1,34 @@
 
 
-
+const sqrt = Math.sqrt;
 
 //Main Animation Loop
 const mainLoop = function(timeStamp){
-
-    //constants
-    const C1 = "rgba(200, 200, 100, 0.5)";
-    const C2 = "rgba(100, 150, 200, 0.5)";
-    const C3 = "rgba(200,100,255,0.5)";
-    const C4 = "rgba(150, 100, 200, 0.5)";
 
     //clearframe
     ctx.fillStyle = "rgba(0, 0, 0, 0.2)";
     ctx.fillRect(0, 0, cWidth, cHeight);
 
     //draw
-    const rec1 = [25,25,25,25]
-    var rectC = mouseDownCan? mouseOverRect(rec1)? C1 : C2 : mouseOverRect(rec1)? C3 : C4
-
+    const C = someRect.get('C')
+    const rec1 = someRect.get('rect')
+    var rectC = mouseDownCan? mouseOverRect(rec1)? C[0] : C[1] : mouseOverRect(rec1)? C[2] : C[3]
     fillRectRel(rec1, rectC);
-
+    if(rec1[0]>0){
+        moveRect(someRect, 'x', -0.1)
+    }
+    
+    const C2 = someCir.get('C')
+    const cir1 = someCir.get('cir')
+    console.log(cir1)
+    var cirC = mouseDownCan? mouseOverCir(cir1)? C2[0] : C2[1] : mouseOverCir(cir1)? C2[2] : C2[3]
+    fillCirRel(cir1, cirC);
+    if(cir1[0]<100){
+        moveCir(someCir, 'X', 0.1)
+    }
 
     //cursor
-    fillCirRel(mX, mY, 0.5, 'rgba(255,255,255,0.5)')
+    fillCirRel([mX, mY, 0.5], 'rgba(255,255,255,0.5)')
 
     //next frame
     window.requestAnimationFrame(mainLoop);
@@ -34,8 +39,39 @@ const mainLoop = function(timeStamp){
 //functions
 ///////////////////
 
+const moveRect = function(themap, dir, howmuch){
+    const pos = themap.get('rect')
+    if(dir === 'x'|| dir === 'X'){
+        pos[0]+=howmuch;
+    }else if(dir === 'y' || dir === 'Y'){
+        pos[1]+=howmuch;
+    }
+    themap.set('rect', pos)
+}
+
+const moveCir = function(themap, dir, howmuch){
+    const pos = themap.get('cir')
+    if(dir === 'x'|| dir === 'X'){
+        pos[0]+=howmuch;
+    }else if(dir === 'y' || dir === 'Y'){
+        pos[1]+=howmuch;
+    }
+    themap.set('cir', pos)
+}
+
+
+
+onkeydown = (e) =>{
+    // console.log(e.key)
+}
+
 const mouseOverRect = function(rect){
     return mX >= rect[0] && mX <= (rect[0]+rect[2]) && mY >= rect[1] && mY <= (rect[1]+rect[3])
+}
+
+const mouseOverCir = function(cir){
+    const ret = sqrt((mX-cir[0])**2 + (mY-cir[1])**2) < cir[2];
+    return ret;
 }
 
 onmousedown = (e) => {
@@ -145,9 +181,9 @@ const fillRectRel = function(rect,c){
     ctx.fillRect(rect[0]/100*cWidth,rect[1]/100*cHeight,rect[2]/100*cWidth,rect[3]/100*cHeight);
 }
 
-const fillCirRel = function (x,y,r,c){
+const fillCirRel = function (cir,c){
     ctx.beginPath();
-    ctx.arc(x/100*cWidth, y/100*cHeight, r/100*cHeight, 0, 2 * Math.PI, false);
+    ctx.arc(cir[0]/100*cWidth, cir[1]/100*cHeight, cir[2]/100*cHeight, 0, 2 * Math.PI, false);
     ctx.fillStyle = c;  ctx.fill(); ctx.lineWidth = 1;
     ctx.strokeStyle = 'rgba(0,0,0,0)';  ctx.stroke();
 }
@@ -157,13 +193,26 @@ const fillCirRel = function (x,y,r,c){
 //globals
 ////////////////
 
+//elements
 const maindiv = document.getElementsByTagName('main')[0];
 const canvas = document.createElement('canvas');
 const ctx = canvas.getContext("2d");
 const menudiv = document.getElementById('theMenu')
+
+//variables
 var brect, dvp, cAR, wWidth, wHeight, cWidth, cHeight, mcX, mcY, mX, mY, mcdX, mcdY, mdX, mdY, mcuX, mcuY, muX, muY;
 var mouseDownCan = false; var orien = "horizontal";
 
+//maps
+const someRect = new Map();
+someRect.set('rect', [50,50,50,50])
+someRect.set('name', 'someRect')
+someRect.set('C', ['rgba(100,200,255,0.5)', 'rgba(100,100,255,0.5)', 'rgba(100,50,200,0.5)', 'rgba(50,100,255,0.5)'])
+
+const someCir = new Map();
+someCir.set('cir', [25,25,10])
+someCir.set('name', 'someCir')
+someCir.set('C', ['rgba(100,200,255,0.25)', 'rgba(100,100,255,0.25)', 'rgba(100,50,200,0.25)', 'rgba(50,100,255,0.25)'])
 
 ////////////////
 //initialization
