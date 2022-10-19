@@ -6,20 +6,24 @@ const sqrt = Math.sqrt;
 const mainLoop = function(timeStamp){
 
     //clearframe
-    ctx.fillStyle = "rgba(0, 0, 0, 0.2)";
+    ctx.fillStyle = "rgb(0, 0, 0)";
     ctx.fillRect(0, 0, cWidth, cHeight);
 
     //draw
     someRect.get('draw')();
     someCir.get('draw')();
 
-    //move if not in location
-    if(someRect.get('rect')[0]>0){
-        someRect.get('move')( 'x', -0.1)
-    }
-    if(someCir.get('cir')[0]>0){
-        someCir.get('move')( 'x', -0.1)
-    }
+
+    //calcs
+    // if(someRect.get('pos')[0]>0){
+    //     moveShape(someRect, 'x', -0.1)
+    // }
+
+    // if(someCir.get('pos')[0]>0){
+    //     moveShape(someCir, 'x', -0.1)
+    // }
+    someRect.get('calc')();
+    someCir.get('calc')();
 
     //cursor
     fillCirRel([mX, mY, 0.5], 'rgba(255,255,255,0.5)')
@@ -33,6 +37,24 @@ const mainLoop = function(timeStamp){
 //functions
 ///////////////////
 
+const moveShape = function(theShape, dir, howmuch){
+    const pos = theShape.get('pos')
+    if(dir === 'x'|| dir === 'X'){ pos[0]+=howmuch;}
+    else if(dir === 'y' || dir === 'Y'){ pos[1]+=howmuch;}
+    theShape.set('pos', pos)
+}
+
+const moveShapeByVec = function(theShape, theVec){
+    const pos = theShape.get('pos')
+    pos[0]+=theVec[0]
+    pos[1]+=theVec[1]
+    theShape.set('pos', pos)
+}
+
+const vecDiff = function(vecTo, vecFrom){
+    return [ vecTo[0]-vecFrom[0] , vecTo[1]-vecFrom[1] ]
+}
+
 onkeydown = (e) =>{
     // console.log(e.key)
 }
@@ -42,8 +64,16 @@ const mouseOverRect = function(rect){
 }
 
 const mouseOverCir = function(cir){
-    const ret = sqrt((mX-cir[0])**2 + (mY-cir[1])**2) < cir[2];
+    const ret = dist([mX,mY], cir) < cir[2];
     return ret;
+}
+
+const dist = function(P1, P2){
+    return sqrt((P2[0]-P1[0])**2 + (P2[1]-P1[1])**2);
+}
+
+const vecLen = function(theVec){
+    return dist(theVec, [0,0])
 }
 
 onmousedown = (e) => {
@@ -182,40 +212,63 @@ var mouseDownCan = false; var orien = "horizontal";
 
 //maps
 const someRect = new Map();
-someRect.set('rect', [50,50,50,50])
+someRect.set('pos',[50,50])
+someRect.set('size', [25,25])
+someRect.set('dest', [0,10])
+someRect.set('speed', 0.1);
 someRect.set('name', 'someRect')
 someRect.set('C', [CC[0], CC[1], CC[2], CC[3]])
 someRect.set('draw', ()=>{
     const C = someRect.get('C')
-    const rec1 = someRect.get('rect')
+    const rec1 = [someRect.get('pos')[0], someRect.get('pos')[1], someRect.get('size')[0], someRect.get('size')[1]]
     var rectC = mouseDownCan? mouseOverRect(rec1)? C[0] : C[1] : mouseOverRect(rec1)? C[2] : C[3]
     fillRectRel(rec1, rectC);
 })
-someRect.set('move',(dir, howmuch) => {
-    const pos = someRect.get('rect')
-    if(dir === 'x'|| dir === 'X'){ pos[0]+=howmuch; }
-    else if(dir === 'y' || dir === 'Y'){ pos[1]+=howmuch; }
-    someRect.set('rect', pos)
+someRect.set('calc', ()=>{
+    const diffVec = vecDiff(someRect.get('dest'), someRect.get('pos'))
+    const len = vecLen(diffVec)
+    const speed = someRect.get('speed')
+    const ratio = speed/len
+    if(len>0){
+        if(len >= speed){
+            moveShapeByVec(someRect, [ratio*diffVec[0], ratio*diffVec[1] ])
+        }else{
+            moveShapeByVec(someRect, diffVec)
+        }
+    }
+    // moveShapeByVec(someRect, )
 })
+// someRect.set('move',(dir, howmuch) => {
+//     const pos = someRect.get('pos')
+//     if(dir === 'x'|| dir === 'X'){ pos[0]+=howmuch; }
+//     else if(dir === 'y' || dir === 'Y'){ pos[1]+=howmuch; }
+//     someRect.set('pos', pos)
 
 
 const someCir = new Map();
-someCir.set('cir', [25,25,10])
+someCir.set('pos', [30,30])
+someCir.set('rad', 10)
+someCir.set('dest', [100,10])
+someCir.set('speed', 0.2)
 someCir.set('name', 'someCir')
 someCir.set('C', [CC[4], CC[5], CC[6], CC[7]])
 someCir.set('draw',()=>{
     const C = someCir.get('C')
-    const cir1 = someCir.get('cir')
+    const cir1 = [someCir.get('pos')[0], someCir.get('pos')[1], someCir.get('rad')]
     console.log(cir1)
     var cirC = mouseDownCan? mouseOverCir(cir1)? C[0] : C[1] : mouseOverCir(cir1)? C[2] : C[3]
     fillCirRel(cir1, cirC);
 })
-someCir.set('move',(dir, howmuch) => {
-    const pos = someCir.get('cir')
-    if(dir === 'x'|| dir === 'X'){ pos[0]+=howmuch;}
-    else if(dir === 'y' || dir === 'Y'){ pos[1]+=howmuch;}
-    someCir.set('cir', pos)
+someCir.set('calc', ()=>{
+    
 })
+
+// someCir.set('move',(dir, howmuch) => {
+//     const pos = someCir.get('pos')
+//     if(dir === 'x'|| dir === 'X'){ pos[0]+=howmuch;}
+//     else if(dir === 'y' || dir === 'Y'){ pos[1]+=howmuch;}
+//     someCir.set('pos', pos)
+// })
 
 
 ////////////////
