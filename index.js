@@ -10,21 +10,15 @@ const mainLoop = function(timeStamp){
     ctx.fillRect(0, 0, cWidth, cHeight);
 
     //draw
-    const C = someRect.get('C')
-    const rec1 = someRect.get('rect')
-    var rectC = mouseDownCan? mouseOverRect(rec1)? C[0] : C[1] : mouseOverRect(rec1)? C[2] : C[3]
-    fillRectRel(rec1, rectC);
-    if(rec1[0]>0){
-        moveRect(someRect, 'x', -0.1)
+    someRect.get('draw')();
+    someCir.get('draw')();
+
+    //move if not in location
+    if(someRect.get('rect')[0]>0){
+        someRect.get('move')( 'x', -0.1)
     }
-    
-    const C2 = someCir.get('C')
-    const cir1 = someCir.get('cir')
-    console.log(cir1)
-    var cirC = mouseDownCan? mouseOverCir(cir1)? C2[0] : C2[1] : mouseOverCir(cir1)? C2[2] : C2[3]
-    fillCirRel(cir1, cirC);
-    if(cir1[0]<100){
-        moveCir(someCir, 'X', 0.1)
+    if(someCir.get('cir')[0]>0){
+        someCir.get('move')( 'x', -0.1)
     }
 
     //cursor
@@ -38,28 +32,6 @@ const mainLoop = function(timeStamp){
 //////////////////
 //functions
 ///////////////////
-
-const moveRect = function(themap, dir, howmuch){
-    const pos = themap.get('rect')
-    if(dir === 'x'|| dir === 'X'){
-        pos[0]+=howmuch;
-    }else if(dir === 'y' || dir === 'Y'){
-        pos[1]+=howmuch;
-    }
-    themap.set('rect', pos)
-}
-
-const moveCir = function(themap, dir, howmuch){
-    const pos = themap.get('cir')
-    if(dir === 'x'|| dir === 'X'){
-        pos[0]+=howmuch;
-    }else if(dir === 'y' || dir === 'Y'){
-        pos[1]+=howmuch;
-    }
-    themap.set('cir', pos)
-}
-
-
 
 onkeydown = (e) =>{
     // console.log(e.key)
@@ -199,6 +171,11 @@ const canvas = document.createElement('canvas');
 const ctx = canvas.getContext("2d");
 const menudiv = document.getElementById('theMenu')
 
+//constants
+const CC = [ 'rgba(100,200,255,0.50)', 'rgba(100,100,255,0.50)', 'rgba(100,50,200,0.50)', 'rgba(50,100,255,0.50)'
+    ,'rgba(100,200,255,0.25)', 'rgba(100,100,255,0.25)', 'rgba(100,50,200,0.25)', 'rgba(50,100,255,0.25)']
+
+
 //variables
 var brect, dvp, cAR, wWidth, wHeight, cWidth, cHeight, mcX, mcY, mX, mY, mcdX, mcdY, mdX, mdY, mcuX, mcuY, muX, muY;
 var mouseDownCan = false; var orien = "horizontal";
@@ -207,12 +184,39 @@ var mouseDownCan = false; var orien = "horizontal";
 const someRect = new Map();
 someRect.set('rect', [50,50,50,50])
 someRect.set('name', 'someRect')
-someRect.set('C', ['rgba(100,200,255,0.5)', 'rgba(100,100,255,0.5)', 'rgba(100,50,200,0.5)', 'rgba(50,100,255,0.5)'])
+someRect.set('C', [CC[0], CC[1], CC[2], CC[3]])
+someRect.set('draw', ()=>{
+    const C = someRect.get('C')
+    const rec1 = someRect.get('rect')
+    var rectC = mouseDownCan? mouseOverRect(rec1)? C[0] : C[1] : mouseOverRect(rec1)? C[2] : C[3]
+    fillRectRel(rec1, rectC);
+})
+someRect.set('move',(dir, howmuch) => {
+    const pos = someRect.get('rect')
+    if(dir === 'x'|| dir === 'X'){ pos[0]+=howmuch; }
+    else if(dir === 'y' || dir === 'Y'){ pos[1]+=howmuch; }
+    someRect.set('rect', pos)
+})
+
 
 const someCir = new Map();
 someCir.set('cir', [25,25,10])
 someCir.set('name', 'someCir')
-someCir.set('C', ['rgba(100,200,255,0.25)', 'rgba(100,100,255,0.25)', 'rgba(100,50,200,0.25)', 'rgba(50,100,255,0.25)'])
+someCir.set('C', [CC[4], CC[5], CC[6], CC[7]])
+someCir.set('draw',()=>{
+    const C = someCir.get('C')
+    const cir1 = someCir.get('cir')
+    console.log(cir1)
+    var cirC = mouseDownCan? mouseOverCir(cir1)? C[0] : C[1] : mouseOverCir(cir1)? C[2] : C[3]
+    fillCirRel(cir1, cirC);
+})
+someCir.set('move',(dir, howmuch) => {
+    const pos = someCir.get('cir')
+    if(dir === 'x'|| dir === 'X'){ pos[0]+=howmuch;}
+    else if(dir === 'y' || dir === 'Y'){ pos[1]+=howmuch;}
+    someCir.set('cir', pos)
+})
+
 
 ////////////////
 //initialization
