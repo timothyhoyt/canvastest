@@ -73,10 +73,6 @@ food.set("new", ()=>{
 
 
 
-
-
-
-
 const creatures = new Map();
 creatures.set('last', 0);
 creatures.set('numFams',0);
@@ -87,14 +83,13 @@ creatures.set('new', ()=>{
     const newCreature = new Map();
     //build first creature
     newCreature.set('num',num)
-    newCreature.set('name', 'someName');
+    newCreature.set('score', 0);
     newCreature.set('pos', [random()*(80)+10,random()*(80)+10]);
     newCreature.set('rad', 3);
     newCreature.set('dir', random()*360); //degrees from East clockwise
-    // newCreature.set('dest', [100,10]);
     newCreature.set('speed', 0);
-    newCreature.set('topSpeed', 1)
-    newCreature.set('accel', 0);//0.001);
+    newCreature.set('topSpeed', 0.25)
+    newCreature.set('accel', 0.001);
     newCreature.set('gen', 0);
     newCreature.set('fam', fam);
     const h = 360/startCreatures*fam+5
@@ -134,5 +129,24 @@ creatures.set('new', ()=>{
     creatures.set('numFams', fam+1);
     creatures.set('last', num+1)
 })
+creatures.set('clone',(which)=>{
+    var num = creatures.get('last');
 
+    const clonedCreature = new Map(creatures.get(which))
+    clonedCreature.set('num',num)
+    clonedCreature.set('speed',0)
+    const birthdir =  clonedCreature.get('dir') + 180 
+    clonedCreature.set('dir', birthdir -50+random()*100);
+    const birthdist = 10;
+    const birthdirrad = degToRad(birthdir)
+    const pos = clonedCreature.get('pos')
+    //clonedCreature.set('pos', [pos[0]+cos(birthdirrad)*birthdist, pos[1]+sin(birthdirrad)*birthdist])
+    
+    creatures.set(num, clonedCreature);
+    creatures.set('last', num+1)
+    // creatures.forEach((val, key)=>{
+    //     if(!isNaN(key)){console.log(val.get('speed'))}
+    // })
+    
+})
 
