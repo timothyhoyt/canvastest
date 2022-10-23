@@ -1,36 +1,32 @@
 
-
+//imports
 const sqrt = Math.sqrt; const random = Math.random; const sin = Math.sin; const cos = Math.cos;
 
 //Main Animation Loop
 const mainLoop = function(timeStamp){
 
+    //per frame constants
+    const seconds = (timeStamp)/1000
+    
     //clearframe
-    ctx.fillStyle = "rgb(0, 0, 0)";
-    ctx.fillRect(0, 0, cWidth, cHeight);
+    ctx.fillStyle = "rgb(0, 0, 0)"; ctx.fillRect(0, 0, cWidth, cHeight);
 
-    //first frame
+    //first frame (app initialization)
     if(firstFrame){
-        for(var i=0; i<50; i++){
-            food.get('new')();
-        }
+        //make food
+        for(var i=0; i<startFood; i++){food.get('new')(); }
         firstFrame = false;
     }
 
+    //food trickle    
+    if((seconds-time) > foodTime){  food.get('new')(); time+=foodTime;}
 
     //draw
-    food.forEach((val, key)=>{
-        if(!isNaN(key)){
-            food.get(key).get("draw")();
-        }
-    })
+    food.forEach((val, key)=>{ if(!isNaN(key)){ food.get(key).get("draw")(); } });
     someCir.get('draw')();
 
     //calcs
     someCir.get('calc')();
-
-
-
 
 
     /////////////////////////////////////////necessary
@@ -69,21 +65,17 @@ const stepShapeToDest = function(theShape){
     }
 }
 
+const fillRectRel = function(rect,c){ ctx.fillStyle = c; ctx.fillRect(rect[0]/100*cWidth,rect[1]/100*cHeight,rect[2]/100*cWidth,rect[3]/100*cHeight);}
+const fillCirRel = function (cir,c){ctx.beginPath(); ctx.arc(cir[0]/100*cWidth, cir[1]/100*cHeight, cir[2]/100*cHeight, 0, 2 * Math.PI, false);ctx.fillStyle = c;  ctx.fill(); ctx.lineWidth = 1; ctx.strokeStyle = 'rgba(0,0,0,0)';  ctx.stroke();}
+const checkorien = function(){if(wWidth >= wHeight) {orien = "horizontal"} else {orien = "vertical"}; setStyles()}
+const readWindowSize = function(){ wWidth = window.innerWidth; wHeight = window.innerHeight;}
 const vecDiff = function(vecTo, vecFrom){return [ vecTo[0]-vecFrom[0] , vecTo[1]-vecFrom[1] ]}
-
-onkeydown = (e) =>{
-    // console.log(e.key)
-}
-
-const mouseOverRect = function(rect){
-    return mX >= rect[0] && mX <= (rect[0]+rect[2]) && mY >= rect[1] && mY <= (rect[1]+rect[3])
-}
-
+onkeydown = (e) =>{ /* console.log(e.key) */}
+const mouseOverRect = function(rect){return mX >= rect[0] && mX <= (rect[0]+rect[2]) && mY >= rect[1] && mY <= (rect[1]+rect[3])}
 const mouseOverCir = function(cir){ return dist([mX,mY], cir) < cir[2];}
-
 const dist = function(P1, P2){ return sqrt((P2[0]-P1[0])**2 + (P2[1]-P1[1])**2);}
-
 const vecLen = function(theVec){return dist(theVec, [0,0])}
+const onMouseDownCanvas = function(){ console.log("Canvas Clicked:",mdX, mdY); mouseDownCan = true;}
 
 onmousedown = (e) => {
     if(e.button === 0){
@@ -96,7 +88,6 @@ onmousedown = (e) => {
     }
 }
 
-const onMouseDownCanvas = function(){ console.log("Canvas Clicked:",mdX, mdY); mouseDownCan = true;}
 
 onmouseup = (e) => {
     if(mouseDownCan){
@@ -118,7 +109,6 @@ onmousemove = (e) => {
     mY = (mY < 0)? 0 : mY;  mY = (mY > 100)? 100 : mY;
 }
 
-const readWindowSize = function(){ wWidth = window.innerWidth; wHeight = window.innerHeight;}
 
 const setStyles = function(){
     //default (normal horizontal)
@@ -155,9 +145,6 @@ const setStyles = function(){
     menudiv.style.height = menH.toString()+"px"; menudiv.style.marginTop = marg.toString()+"px";
 }
 
-const checkorien = function(){
-    if(wWidth >= wHeight) {orien = "horizontal"} else {orien = "vertical"}; setStyles()
-}
 
 const sizeCanvas = function(){
     readWindowSize(); checkorien(); 
@@ -166,35 +153,36 @@ const sizeCanvas = function(){
     canvas.width = cWidth; canvas.height = cHeight; cAR = cWidth/cHeight
 }
 
-const fillRectRel = function(rect,c){
-    ctx.fillStyle = c; ctx.fillRect(rect[0]/100*cWidth,rect[1]/100*cHeight,rect[2]/100*cWidth,rect[3]/100*cHeight);
-}
 
-const fillCirRel = function (cir,c){
-    ctx.beginPath();
-    ctx.arc(cir[0]/100*cWidth, cir[1]/100*cHeight, cir[2]/100*cHeight, 0, 2 * Math.PI, false);
-    ctx.fillStyle = c;  ctx.fill(); ctx.lineWidth = 1; ctx.strokeStyle = 'rgba(0,0,0,0)';  ctx.stroke();
-}
 
 
 ////////////////
 //globals
 ////////////////
 
-//elements
+//primary elements
 const maindiv = document.getElementsByTagName('main')[0]; const canvas = document.createElement('canvas');
 const ctx = canvas.getContext("2d"); const menudiv = document.getElementById('theMenu')
 
-//constants
+//universal constants
 const CC = [ 'rgba(100,200,255,0.50)', 'rgba(100,100,255,0.50)', 'rgba(100,50,200,0.50)', 'rgba(50,100,255,0.50)'
     ,'rgba(100,200,255,0.25)', 'rgba(100,100,255,0.25)', 'rgba(100,50,200,0.25)', 'rgba(50,100,255,0.25)']
 
-//variables
+//app constants
+const foodRate = 2; // how many new foods per second, limited by frame rate
+const foodTime = 1/foodRate;
+const startFood = 20;
+
+//universal variables
 var brect, dvp, cAR, wWidth, wHeight, cWidth, cHeight, mcX, mcY, mX, mY, mcdX, mcdY, mdX, mdY, mcuX, mcuY, muX, muY;
-var mouseDownCan = false; var orien = "horizontal"; var firstFrame = true;
+var mouseDownCan = false; var orien = "horizontal"; var firstFrame = true; 
+
+//app variables
+var time = 0;
 
 
 
+//app maps (fast objects)
 const food = new Map();
 food.set("last", 0);
 food.set("new", ()=>{
@@ -215,7 +203,6 @@ food.set("new", ()=>{
     food.set(num, newFood);
     food.set('last', num+1);
 })
-
 
 
 const someCir = new Map();
@@ -239,7 +226,7 @@ someCir.set('calc', ()=>{
 
 
 ////////////////
-//initialization
+//universal initialization
 ///////////////////
 
 readWindowSize();
