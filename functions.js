@@ -21,15 +21,15 @@ const moveShapeByVec = function(theShape, theVec){
 }
 
 //not used
-const stepShapeToDest = function(theShape){
-    const diffVec = vecDiff(theShape.get('dest'), theShape.get('pos'))
-    const len = vecLen(diffVec);  const speed = theShape.get('speed')
-    const ratio = speed/len
-    if(len>0){
-        if(len >= speed){  moveShapeByVec(theShape, [ratio*diffVec[0], ratio*diffVec[1] ])}
-        else{ moveShapeByVec(theShape, diffVec)}
-    }
-}
+// const stepShapeToDest = function(theShape){
+//     const diffVec = vecDiff(theShape.get('dest'), theShape.get('pos'))
+//     const len = vecLen(diffVec);  const speed = theShape.get('speed')
+//     const ratio = speed/len
+//     if(len>0){
+//         if(len >= speed){  moveShapeByVec(theShape, [ratio*diffVec[0], ratio*diffVec[1] ])}
+//         else{ moveShapeByVec(theShape, diffVec)}
+//     }
+// }
 
 const fillRectRel = function(rect,c){ ctx.fillStyle = c; ctx.fillRect(rect[0]/100*cWidth,rect[1]/100*cHeight,rect[2]/100*cWidth,rect[3]/100*cHeight);}
 const fillCirRel = function (cir,c){ctx.beginPath(); ctx.arc(cir[0]/100*cWidth, cir[1]/100*cHeight, cir[2]/100*cHeight, 0, 2 * Math.PI, false);ctx.fillStyle = c;  ctx.fill(); ctx.lineWidth = 1; ctx.strokeStyle = 'rgba(0,0,0,0)';  ctx.stroke();}
@@ -43,7 +43,11 @@ const dist = function(P1, P2){ return sqrt((P2[0]-P1[0])**2 + (P2[1]-P1[1])**2);
 const vecLen = function(theVec){return dist(theVec, [0,0])}
 const degToRad = function(deg){return (deg/180*PI)%(2*PI)};
 const radToDeg = function(rad){return (rad/PI*180)%(360)};
-const onMouseDownCanvas = function(){ console.log("Canvas Clicked:",mdX, mdY); mouseDownCan = true;}
+const onMouseDownCanvas = function(){ 
+    console.log("Canvas Clicked:",mdX, mdY);
+    creatures.get('clone')(2);
+    mouseDownCan = true;
+}
 
 onmousedown = (e) => {
     if(e.button === 0){
