@@ -9,7 +9,7 @@ const mainLoop = function(timeStamp){
     ctx.fillStyle = "rgb(0, 0, 0)";
     ctx.fillRect(0, 0, cWidth, cHeight);
 
-
+    //first frame
     if(firstFrame){
         for(var i=0; i<50; i++){
             food.get('new')();
@@ -19,19 +19,14 @@ const mainLoop = function(timeStamp){
 
 
     //draw
-    
     food.forEach((val, key)=>{
         if(!isNaN(key)){
             food.get(key).get("draw")();
         }
     })
-
-    // someRect.get('draw')();
     someCir.get('draw')();
 
-
     //calcs
-    // someRect.get('calc')();
     someCir.get('calc')();
 
 
