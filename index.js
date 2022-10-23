@@ -1,8 +1,9 @@
 
 //app constants
-const foodRate = 2; // how many new foods per second, limited by frame rate
+const foodRate = 0.5; // how many new foods per second, limited by frame rate
 const foodTime = 1/foodRate;
 const startFood = 2;
+const startCreatures = 10;
 
 //app variables
 var time = 0;
@@ -20,6 +21,7 @@ const mainLoop = function(timeStamp){
     if(firstFrame){
         //make food
         for(var i=0; i<startFood; i++){food.get('new')(); }
+        for(var i=0; i<startCreatures; i++){creatures.get('new')()}
         firstFrame = false;
     }
 
@@ -28,10 +30,10 @@ const mainLoop = function(timeStamp){
 
     //draw
     food.forEach((val, key)=>{ if(!isNaN(key)){ food.get(key).get("draw")(); } });
-    someCir.get('draw')();
+    creatures.forEach((val, key)=>{ if(!isNaN(key)){ creatures.get(key).get('draw')();}})
 
     //calcs
-    someCir.get('calc')();
+    creatures.forEach((val, key)=>{ if(!isNaN(key)){ creatures.get(key).get('calc')();}})
 
 
     /////////////////////////////////////////necessary
@@ -71,59 +73,66 @@ food.set("new", ()=>{
 
 
 
+
+
+
+
 const creatures = new Map();
-creatures.set('last', 1);
-const newCreature = new Map();
-//build first creature
-creatures.set(0, newCreature )
-creatures.set('clone',(num)=>{
-    //build new creature based on existing
-})
+creatures.set('last', 0);
+creatures.set('numFams',0);
+creatures.set('new', ()=>{
+    var num = creatures.get('last');
+    var fam = creatures.get('numFams');
 
-
-const someCir = new Map();
-someCir.set('name', 'someName');
-someCir.set('pos', [50,50]);
-someCir.set('rad', 5);
-someCir.set('dir', 0); //degrees from East clockwise
-someCir.set('dest', [100,10]);
-someCir.set('speed', 0.2);
-someCir.set('topSpeed', 2)
-someCir.set('accel', 0.01);
-someCir.set('gen', 0);
-someCir.set('fam', 0);
-someCir.set('C', [CC[4], CC[5], CC[6]]);
-someCir.set('draw',()=>{
-    const C = someCir.get('C');
-    const pos = someCir.get('pos');
-    const rad = someCir.get('rad');
-    const cir1 = [pos[0], pos[1], rad];
-    const dir = someCir.get('dir');
-    const radDir = degToRad(dir);
-    var cirC = mouseDownCan? mouseOverCir(cir1)? C[0] : C[1] : mouseOverCir(cir1)? C[2] : C[1]
-    fillCirRel(cir1, cirC);
-    const rad2 = 0.8*rad;
-    const pos2 = [pos[0]+rad2*cos(radDir), pos[1]+rad2*sin(radDir)]
-    cir2 = [pos2[0], pos2[1], 1];
-    fillCirRel(cir2, 'rgba(255,255,255,0.5)')
+    const newCreature = new Map();
+    //build first creature
+    newCreature.set('num',num)
+    newCreature.set('name', 'someName');
+    newCreature.set('pos', [random()*(80)+10,random()*(80)+10]);
+    newCreature.set('rad', 3);
+    newCreature.set('dir', random()*360); //degrees from East clockwise
+    // newCreature.set('dest', [100,10]);
+    newCreature.set('speed', 0);
+    newCreature.set('topSpeed', 1)
+    newCreature.set('accel', 0);//0.001);
+    newCreature.set('gen', 0);
+    newCreature.set('fam', fam);
+    const h = 360/startCreatures*fam+5
+    newCreature.set('C', ['hsl('+ h +',100%,80%, 0.5)', 'hsl('+ h +',100%,50%, 0.5)', 'hsl('+ h +',100%,70%, 0.5)']);
+    newCreature.set('draw',()=>{
+        const C = newCreature.get('C');
+        const pos = newCreature.get('pos');
+        const rad = newCreature.get('rad');
+        const cir1 = [pos[0], pos[1], rad];
+        const dir = newCreature.get('dir');
+        const radDir = degToRad(dir);
+        var cirC = mouseDownCan? mouseOverCir(cir1)? C[0] : C[1] : mouseOverCir(cir1)? C[2] : C[1]
+        fillCirRel(cir1, cirC);
+        const rad2 = 0.8*rad;
+        const pos2 = [pos[0]+rad2*cos(radDir), pos[1]+rad2*sin(radDir)]
+        cir2 = [pos2[0], pos2[1], 0.25];
+        fillCirRel(cir2, 'rgba(255,255,255,0.5)')
+    })
+    newCreature.set('calc', ()=>{
+        //stepShapeToDest(newCreature)
+        const speed = newCreature.get('speed')
+        const dir = newCreature.get('dir');
+        const radDir = degToRad(dir);
+        const dirVec = [speed*cos(radDir), speed*sin(radDir)]
+        const pos = newCreature.get('pos');
+        if(pos[0]<0) pos[0]+=100;
+        if(pos[0]>100) pos[0]-=100;
+        if(pos[1]<0) pos[1]+=100;
+        if(pos[1]>100) pos[1]-=100;
+        newCreature.set('pos',pos)
+        moveShapeByVec(newCreature, dirVec)
+        var newSpeed = newCreature.get('speed')+newCreature.get('accel')
+        newSpeed = (newSpeed > newCreature.get('topSpeed'))? newCreature.get('topSpeed') : newSpeed
+        newCreature.set('speed', newSpeed)
+    })
+    creatures.set(num, newCreature);
+    creatures.set('numFams', fam+1);
+    creatures.set('last', num+1)
 })
-someCir.set('calc', ()=>{
-    //stepShapeToDest(someCir)
-    const speed = someCir.get('speed')
-    const dir = someCir.get('dir');
-    const radDir = degToRad(dir);
-    const dirVec = [speed*cos(radDir), speed*sin(radDir)]
-    const pos = someCir.get('pos');
-    if(pos[0]<0) pos[0]+=100;
-    if(pos[0]>100) pos[0]-=100;
-    if(pos[1]<0) pos[1]+=100;
-    if(pos[1]>100) pos[1]-=100;
-    someCir.set('pos',pos)
-    moveShapeByVec(someCir, dirVec)
-    var newSpeed = someCir.get('speed')+someCir.get('accel')
-    newSpeed = (newSpeed > someCir.get('topSpeed'))? someCir.get('topSpeed') : newSpeed
-    someCir.set('speed', newSpeed)
-})
-
 
 
