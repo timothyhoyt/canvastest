@@ -1,40 +1,24 @@
 
 //app constants
-const foodRate = 0.5; // how many new foods per second, limited by frame rate
+const foodRate = 20; // how many new foods per second, limited by frame rate
 const foodTime = 1/foodRate;
 const startFood = 2;
 const startCreatures = 10;
+const creatureStartRad = 3;
 
 //app variables
 var time = 0;
 
 //Main Animation Loop
-const mainLoop = function(timeStamp){
+const mainLoop = function(){
 
-    //per frame constants
-    const seconds = (timeStamp)/1000
-    
     //clearframe
     ctx.fillStyle = "rgb(0, 0, 0)"; ctx.fillRect(0, 0, cWidth, cHeight);
 
-    //first frame (app initialization)
-    if(firstFrame){
-        //make food
-        for(var i=0; i<startFood; i++){food.get('new')(); }
-        for(var i=0; i<startCreatures; i++){creatures.get('new')()}
-        firstFrame = false;
-    }
-
-    //food trickle    
-    if((seconds-time) > foodTime){  food.get('new')(); time+=foodTime;}
-
     //draw
     food.forEach((val, key)=>{ if(!isNaN(key)){ food.get(key).get("draw")(); } });
-    creatures.forEach((val, key)=>{ if(!isNaN(key)){ creatures.get(key).get('draw')();}})
-
-    //calcs
-    creatures.forEach((val, key)=>{ if(!isNaN(key)){ creatures.get(key).get('calc')();}})
-
+    //creatures.forEach((val, key)=>{ if(!isNaN(key)){ creatures.get(key).get('draw')();}})
+    creatures.get('draw')()
 
     /////////////////////////////////////////necessary
     //cursor
@@ -44,8 +28,33 @@ const mainLoop = function(timeStamp){
     window.requestAnimationFrame(mainLoop);
 }
 
+var lastLapse = 0;
+const timeLoop = function(){
+    const currTime = new Date();
+    const lapse = currTime - startTime
 
+    //per frame constants
+    const seconds = (lapse)/1000
 
+    //first frame (app initialization)
+    if(firstFrame){
+        //make start maps items
+        for(var i=0; i<startFood; i++){food.get('new')(); }
+        for(var i=0; i<startCreatures; i++){creatures.get('new')()}
+        firstFrame = false;
+    }
+
+    //food trickle    
+    if((seconds-time) > foodTime){ food.get('new')(); time+=foodTime;}
+
+    //calcs
+    // creatures.forEach((val, key)=>{ if(!isNaN(key)){ creatures.get(key).get('calc')();}})
+    creatures.get('calc')()
+
+    //next frame
+    setTimeout(timeLoop, 0)
+    lastLapse = lapse;
+}
 
 
 
@@ -81,72 +90,76 @@ creatures.set('new', ()=>{
     var fam = creatures.get('numFams');
 
     const newCreature = new Map();
+    creatures.set(num, newCreature);
     //build first creature
     newCreature.set('num',num)
     newCreature.set('score', 0);
     newCreature.set('pos', [random()*(80)+10,random()*(80)+10]);
-    newCreature.set('rad', 3);
+    newCreature.set('rad', creatureStartRad);
     newCreature.set('dir', random()*360); //degrees from East clockwise
     newCreature.set('speed', 0);
-    newCreature.set('topSpeed', 0.25)
+    newCreature.set('topSpeed', 0.1)
     newCreature.set('accel', 0.001);
     newCreature.set('gen', 0);
     newCreature.set('fam', fam);
     const h = 360/startCreatures*fam+5
     newCreature.set('C', ['hsl('+ h +',100%,80%, 0.5)', 'hsl('+ h +',100%,50%, 0.5)', 'hsl('+ h +',100%,70%, 0.5)']);
-    newCreature.set('draw',()=>{
-        const C = newCreature.get('C');
-        const pos = newCreature.get('pos');
-        const rad = newCreature.get('rad');
-        const cir1 = [pos[0], pos[1], rad];
-        const dir = newCreature.get('dir');
-        const radDir = degToRad(dir);
-        var cirC = mouseDownCan? mouseOverCir(cir1)? C[0] : C[1] : mouseOverCir(cir1)? C[2] : C[1]
-        fillCirRel(cir1, cirC);
-        const rad2 = 0.8*rad;
-        const pos2 = [pos[0]+rad2*cos(radDir), pos[1]+rad2*sin(radDir)]
-        cir2 = [pos2[0], pos2[1], 0.25];
-        fillCirRel(cir2, 'rgba(255,255,255,0.5)')
-    })
-    newCreature.set('calc', ()=>{
-        //stepShapeToDest(newCreature)
-        const speed = newCreature.get('speed')
-        const dir = newCreature.get('dir');
-        const radDir = degToRad(dir);
-        const dirVec = [speed*cos(radDir), speed*sin(radDir)]
-        const pos = newCreature.get('pos');
-        if(pos[0]<0) pos[0]+=100;
-        if(pos[0]>100) pos[0]-=100;
-        if(pos[1]<0) pos[1]+=100;
-        if(pos[1]>100) pos[1]-=100;
-        newCreature.set('pos',pos)
-        moveShapeByVec(newCreature, dirVec)
-        var newSpeed = newCreature.get('speed')+newCreature.get('accel')
-        newSpeed = (newSpeed > newCreature.get('topSpeed'))? newCreature.get('topSpeed') : newSpeed
-        newCreature.set('speed', newSpeed)
-    })
-    creatures.set(num, newCreature);
     creatures.set('numFams', fam+1);
     creatures.set('last', num+1)
 })
-creatures.set('clone',(which)=>{
-    var num = creatures.get('last');
+creatures.set('draw',()=>{
+    creatures.forEach((val,key)=>{
+        if(!isNaN(key)){
+            const C = creatures.get(key).get('C');
+            const pos = creatures.get(key).get('pos');
+            const rad = creatures.get(key).get('rad');
+            const cir1 = [pos[0], pos[1], rad];
+            const dir = creatures.get(key).get('dir');
+            const radDir = degToRad(dir);
+            var cirC = mouseDownCan? mouseOverCir(cir1)? C[0] : C[1] : mouseOverCir(cir1)? C[2] : C[1]
+            fillCirRel(cir1, cirC);
+            const rad2 = 0.8*rad;
+            const pos2 = [pos[0]+rad2*cos(radDir), pos[1]+rad2*sin(radDir)]
+            cir2 = [pos2[0], pos2[1], 0.2*rad];
+            fillCirRel(cir2, 'rgba(255,255,255,0.5)')
+        }
+    })
+})
+creatures.set('calc', ()=>{
+    creatures.forEach((val,key)=>{
+        if(!isNaN(key)){
+            const speed = creatures.get(key).get('speed')
+            const dir = creatures.get(key).get('dir');
+            const radDir = degToRad(dir);
+            const dirVec = [speed*cos(radDir), speed*sin(radDir)]
+            const pos = creatures.get(key).get('pos');
+            if(pos[0]<0) pos[0]+=100;
+            if(pos[0]>100) pos[0]-=100;
+            if(pos[1]<0) pos[1]+=100;
+            if(pos[1]>100) pos[1]-=100;
+            creatures.get(key).set('pos',pos)
+            moveShapeByVec(creatures.get(key), dirVec)
+            var newSpeed = creatures.get(key).get('speed')+creatures.get(key).get('accel')
+            newSpeed = (newSpeed > creatures.get(key).get('topSpeed'))? creatures.get(key).get('topSpeed') : newSpeed
+            creatures.get(key).set('speed', newSpeed)
+        }
+    })
+})
 
-    const clonedCreature = new Map(creatures.get(which))
-    clonedCreature.set('num',num)
-    clonedCreature.set('speed',0)
-    const birthdir =  clonedCreature.get('dir') + 180 
-    clonedCreature.set('dir', birthdir -50+random()*100);
-    const birthdist = 10;
-    const birthdirrad = degToRad(birthdir)
-    const pos = clonedCreature.get('pos')
-    //clonedCreature.set('pos', [pos[0]+cos(birthdirrad)*birthdist, pos[1]+sin(birthdirrad)*birthdist])
-    
-    creatures.set(num, clonedCreature);
+creatures.set('clone',(which)=>{
+    const num = creatures.get('last')
+    const newCreature = new Map(creatures.get(which))
+    newCreature.set('num', num)
+    newCreature.set('speed', 0)
+    newCreature.set('score', 0)
+    const oldpos = newCreature.get('pos')
+    const olddir = newCreature.get('dir')
+    const olddirrad = degToRad(olddir)
+    newCreature.set('pos', [ oldpos[0]-5*cos(olddirrad), oldpos[1]-5*sin(olddirrad)])
+    newCreature.set('dir', olddir +90 + random()*180)
+    newCreature.set('gen', newCreature.get('gen')+1)
+    newCreature.set('rad', creatureStartRad)
+    creatures.set(num, newCreature)
     creatures.set('last', num+1)
-    // creatures.forEach((val, key)=>{
-    //     if(!isNaN(key)){console.log(val.get('speed'))}
-    // })
-    
 })
 

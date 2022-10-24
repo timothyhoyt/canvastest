@@ -20,16 +20,7 @@ const moveShapeByVec = function(theShape, theVec){
     theShape.set('pos', pos)
 }
 
-//not used
-// const stepShapeToDest = function(theShape){
-//     const diffVec = vecDiff(theShape.get('dest'), theShape.get('pos'))
-//     const len = vecLen(diffVec);  const speed = theShape.get('speed')
-//     const ratio = speed/len
-//     if(len>0){
-//         if(len >= speed){  moveShapeByVec(theShape, [ratio*diffVec[0], ratio*diffVec[1] ])}
-//         else{ moveShapeByVec(theShape, diffVec)}
-//     }
-// }
+
 
 const fillRectRel = function(rect,c){ ctx.fillStyle = c; ctx.fillRect(rect[0]/100*cWidth,rect[1]/100*cHeight,rect[2]/100*cWidth,rect[3]/100*cHeight);}
 const fillCirRel = function (cir,c){ctx.beginPath(); ctx.arc(cir[0]/100*cWidth, cir[1]/100*cHeight, cir[2]/100*cHeight, 0, 2 * Math.PI, false);ctx.fillStyle = c;  ctx.fill(); ctx.lineWidth = 1; ctx.strokeStyle = 'rgba(0,0,0,0)';  ctx.stroke();}
