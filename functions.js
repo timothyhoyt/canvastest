@@ -34,6 +34,10 @@ const dist = function(P1, P2){ return sqrt((P2[0]-P1[0])**2 + (P2[1]-P1[1])**2);
 const vecLen = function(theVec){return dist(theVec, [0,0])}
 const degToRad = function(deg){return (deg/180*PI)%(2*PI)};
 const radToDeg = function(rad){return (rad/PI*180)%(360)};
+
+
+
+
 const onMouseDownCanvas = function(){ 
     console.log("Canvas Clicked:",mdX, mdY);
     creatures.get('clone')(2);
