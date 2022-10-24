@@ -5,6 +5,8 @@
 //primary elements
 const maindiv = document.getElementsByTagName('main')[0]; const canvas = document.createElement('canvas');
 const ctx = canvas.getContext("2d"); const menudiv = document.getElementById('theMenu')
+const fpsdiv = document.getElementsByClassName('fps')[0]
+
 
 //universal constants
 const CC = [ 'rgba(100,200,255,0.50)', 'rgba(100,100,255,0.50)', 'rgba(100,50,200,0.50)', 'rgba(50,100,255,0.50)'

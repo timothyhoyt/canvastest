@@ -23,6 +23,8 @@ const mainLoop = function(){
     //cursor
     fillCirRel([mX, mY, 0.5], 'rgba(255,255,255,0.5)')
 
+    //TODO FPS display
+
     //next frame
     window.requestAnimationFrame(mainLoop);
 }
@@ -31,6 +33,7 @@ var lastLapse = 0;
 const timeLoop = function(){
     const currTime = new Date();
     const lapse = currTime - startTime
+    //TODO fps calc
 
     //per frame constants
     const seconds = (lapse)/1000
