@@ -1,11 +1,11 @@
 
 //app constants
-const foodRate = 0; // how many new foods per second, limited by frame rate
+const foodRate = 3; // how many new foods per second, limited by frame rate
 const foodTime = 1/foodRate;
 const startFood = 10;
 const startCreatures = 10;
-const creatureStartRad = 3;
-const foodSize = 3;
+const creatureStartRad = 2;
+const foodSize = 2;
 
 //app variables
 var time = 0;
@@ -103,7 +103,7 @@ creatures.set('new', ()=>{
     newCreature.set('topSpeed', 0.1)
     newCreature.set('accel', 0.001);
     newCreature.set('rotSpeed', 0);
-    newCreature.set('rotTopSpeed', 2);
+    newCreature.set('rotTopSpeed', 3);
     newCreature.set('rotAccel', 0.02);
     newCreature.set('gen', 0);
     newCreature.set('fam', fam);
@@ -135,6 +135,7 @@ creatures.set('calc', ()=>{
         if(!isNaN(key)){
             //move
             const theCreature = creatures.get(key)
+            const targetNum = theCreature.get('target')
             const speed = theCreature.get('speed')
             const dir = theCreature.get('dir');
             const radDir = degToRad(dir);
@@ -146,12 +147,38 @@ creatures.set('calc', ()=>{
             if(pos[1]>100) pos[1]-=100;
             theCreature.set('pos',pos)
             moveShapeByVec(theCreature, dirVec)
-            var closest = -1;
-            var closestD = 99999999;
+            
 
             //TODO eat target if close enough
-
+            if(targetNum > -1){
+                // console.log('checking distance to target', targetNum)
+                const theTarget = food.get(targetNum)
+                // console.log(theTarget)
+                const fpos1 = theTarget.get('pos')
+                const fpos = [fpos1[0]+foodSize/2, fpos1[1]+foodSize/2]
+                const eatDist = dist(fpos, pos)
+                if(eatDist < theCreature.get('rad')){
+                    // console.log('creature', key, 'ate food', targetNum)
+                    const prevScore = theCreature.get('score')
+                    theCreature.set('score',prevScore+1)
+                    // console.log('new score', prevScore+1)
+                    food.delete(targetNum)
+                    // console.log('target set to -1')
+                    creatures.forEach((val,key3)=>{
+                        if(!isNaN(key3)){
+                            const clearCreature = creatures.get(key3)
+                            const cctarg = clearCreature.get('target')
+                            if(cctarg === targetNum){
+                                clearCreature.set('target',-1)
+                            }
+                        }
+                    })
+                }
+            }
+            // console.log('post eat')
             //find next target
+            var closest = -1;
+            var closestD = 99999999;
             food.forEach((val, key2)=>{
                 if(!isNaN(key2)){
                     const fpos1 = food.get(key2).get('pos')
@@ -173,6 +200,7 @@ creatures.set('calc', ()=>{
             //rotate toward target
             if(closest > -1){
                 const fpos1 = food.get(closest).get('pos')
+                const rotSpeed = theCreature.get('rotSpeed')
                 const fpos = [fpos1[0]+foodSize/2, fpos1[1]+foodSize/2]
                 const diff = [fpos[0]-pos[0], fpos[1]-pos[1]]
                 if(diff[0]>=50){diff[0]-=100}
@@ -180,6 +208,7 @@ creatures.set('calc', ()=>{
                 if(diff[1]>=50){diff[1]-=100}
                 if(diff[1]<-50){diff[1]+=100}
                 theCreature.set('targetPos', [pos[0]+diff[0],pos[1]+diff[1]])
+
                 const angleTo = degAtan2([0,0],diff)
                 var diffAngle = angleTo - dir
                 
@@ -188,7 +217,6 @@ creatures.set('calc', ()=>{
 
                 const absdiff = abs(diffAngle)
                 const direct = sign(diffAngle)
-                const rotSpeed = theCreature.get('rotSpeed')
                 var newDir = dir;
 
                 if(absdiff >= rotSpeed){
@@ -201,32 +229,26 @@ creatures.set('calc', ()=>{
                     if(newDir < 0){newDir+=360}
                     if(newDir >=360){newDir-=360}
                     theCreature.set('dir',newDir)
-                    console.log('rotating')
+                    // console.log('rotating')
                 }
-
 
                 //apply rotAccel
                 if(absdiff > rotSpeed){
                     const rotAccel = theCreature.get('rotAccel')
                     const rotTopSpeed = theCreature.get('rotTopSpeed')
-
                     var newRotSpeed = rotSpeed
                     newRotSpeed+=rotAccel;
                     if(newRotSpeed<0){newRotSpeed = 0}
                     if(newRotSpeed>rotTopSpeed){newRotSpeed = rotTopSpeed}
                     theCreature.set('rotSpeed',newRotSpeed)
-                    console.log('adjusting rotspeed', newRotSpeed)
+                    // console.log('adjusting rotspeed', newRotSpeed)
                 }
             }
 
-            
             //linear accelerate
             var newSpeed = theCreature.get('speed')+theCreature.get('accel')
             newSpeed = (newSpeed > theCreature.get('topSpeed'))? theCreature.get('topSpeed') : newSpeed
             theCreature.set('speed', newSpeed)
-
-            
-
         }
     })
 })
