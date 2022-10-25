@@ -2,8 +2,8 @@
 //app constants
 const foodRate = 0; // how many new foods per second, limited by frame rate
 const foodTime = 1/foodRate;
-const startFood = 1;
-const startCreatures = 1;
+const startFood = 10;
+const startCreatures = 10;
 const creatureStartRad = 3;
 const foodSize = 3;
 
@@ -19,21 +19,6 @@ const mainLoop = function(){
     //draw
     food.forEach((val, key)=>{ if(!isNaN(key)){ food.get(key).get("draw")(); } });
     creatures.get('draw')()
-
-    // const theCreature = creatures.get(0)
-    // var cposx = theCreature.get('pos')[0]
-    // var cposy = theCreature.get('pos')[1]
-    // var fposx = theCreature.get('targetPos')[0]
-    // var fposy = theCreature.get('targetPos')[1]
-    // cposx = cposx/100*cWidth
-    // cposy = cposy/100*cHeight
-    // fposx = fposx/100*cWidth
-    // fposy = fposy/100*cHeight
-    // ctx.strokeStyle = "blue";
-    // ctx.beginPath();
-    // ctx.moveTo(cposx,cposy);
-    // ctx.lineTo(fposx, fposy);
-    // ctx.stroke();
     
 
     /////////////////////////////////////////necessary
@@ -117,8 +102,8 @@ creatures.set('new', ()=>{
     newCreature.set('speed', 0);
     newCreature.set('topSpeed', 0.1)
     newCreature.set('accel', 0.001);
-    newCreature.set('rotSpeed', 2);
-    newCreature.set('rotTopSpeed', 1);
+    newCreature.set('rotSpeed', 0);
+    newCreature.set('rotTopSpeed', 2);
     newCreature.set('rotAccel', 0.02);
     newCreature.set('gen', 0);
     newCreature.set('fam', fam);
@@ -167,7 +152,6 @@ creatures.set('calc', ()=>{
             //TODO eat target if close enough
 
             //find next target
-            //TODO fix for finding targets across canvas border
             food.forEach((val, key2)=>{
                 if(!isNaN(key2)){
                     const fpos1 = food.get(key2).get('pos')
@@ -184,7 +168,6 @@ creatures.set('calc', ()=>{
                     }
                 }
             })
-
             theCreature.set('target', closest);
 
             //rotate toward target
@@ -202,24 +185,42 @@ creatures.set('calc', ()=>{
                 
                 if(diffAngle<-180){diffAngle+=360}
                 if(diffAngle >= 180){diffAngle-=360}
-                // console.log(diffAngle)
 
+                const absdiff = abs(diffAngle)
+                const direct = sign(diffAngle)
                 const rotSpeed = theCreature.get('rotSpeed')
-                // console.log('rotSpeed', rotSpeed)
-                if(abs(diffAngle) >= rotSpeed){
-                    // console.log('correcting angle by', sign(diffAngle)*rotSpeed)
-                    theCreature.set('dir', dir + sign(diffAngle)*rotSpeed)
-                }else if ( abs(diffAngle) > 0.01 ){
-                    // console.log('correcting angle by', diffAngle)
-                    theCreature.set('dir', dir + diffAngle)
+                var newDir = dir;
+
+                if(absdiff >= rotSpeed){
+                    newDir =  dir + direct*rotSpeed
+                }else if ( absdiff > 0.0001 ){
+                    newDir = dir + diffAngle
+                }
+
+                if(newDir != dir){
+                    if(newDir < 0){newDir+=360}
+                    if(newDir >=360){newDir-=360}
+                    theCreature.set('dir',newDir)
+                    console.log('rotating')
                 }
 
 
-                //TODO apply rotation acceleration according to sign of diff angle
+                //apply rotAccel
+                if(absdiff > rotSpeed){
+                    const rotAccel = theCreature.get('rotAccel')
+                    const rotTopSpeed = theCreature.get('rotTopSpeed')
+
+                    var newRotSpeed = rotSpeed
+                    newRotSpeed+=rotAccel;
+                    if(newRotSpeed<0){newRotSpeed = 0}
+                    if(newRotSpeed>rotTopSpeed){newRotSpeed = rotTopSpeed}
+                    theCreature.set('rotSpeed',newRotSpeed)
+                    console.log('adjusting rotspeed', newRotSpeed)
+                }
             }
 
             
-            //accelerate
+            //linear accelerate
             var newSpeed = theCreature.get('speed')+theCreature.get('accel')
             newSpeed = (newSpeed > theCreature.get('topSpeed'))? theCreature.get('topSpeed') : newSpeed
             theCreature.set('speed', newSpeed)
