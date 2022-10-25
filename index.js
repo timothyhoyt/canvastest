@@ -5,6 +5,7 @@ const foodTime = 1/foodRate;
 const startFood = 1;
 const startCreatures = 1;
 const creatureStartRad = 3;
+const foodSize = 3;
 
 //app variables
 var time = 0;
@@ -19,20 +20,20 @@ const mainLoop = function(){
     food.forEach((val, key)=>{ if(!isNaN(key)){ food.get(key).get("draw")(); } });
     creatures.get('draw')()
 
-    const theCreature = creatures.get(0)
-    var cposx = theCreature.get('pos')[0]
-    var cposy = theCreature.get('pos')[1]
-    var fposx = theCreature.get('targetPos')[0]
-    var fposy = theCreature.get('targetPos')[1]
-    cposx = cposx/100*cWidth
-    cposy = cposy/100*cHeight
-    fposx = fposx/100*cWidth
-    fposy = fposy/100*cHeight
-    ctx.strokeStyle = "blue";
-    ctx.beginPath();
-    ctx.moveTo(cposx,cposy);
-    ctx.lineTo(fposx, fposy);
-    ctx.stroke();
+    // const theCreature = creatures.get(0)
+    // var cposx = theCreature.get('pos')[0]
+    // var cposy = theCreature.get('pos')[1]
+    // var fposx = theCreature.get('targetPos')[0]
+    // var fposy = theCreature.get('targetPos')[1]
+    // cposx = cposx/100*cWidth
+    // cposy = cposy/100*cHeight
+    // fposx = fposx/100*cWidth
+    // fposy = fposy/100*cHeight
+    // ctx.strokeStyle = "blue";
+    // ctx.beginPath();
+    // ctx.moveTo(cposx,cposy);
+    // ctx.lineTo(fposx, fposy);
+    // ctx.stroke();
     
 
     /////////////////////////////////////////necessary
@@ -84,7 +85,7 @@ food.set("new", ()=>{
     const newFood = new Map();
     newFood.set('num', num);
     newFood.set('pos',[random()*(80)+10,random()*(80)+10]);
-    newFood.set('size', [3,3]);
+    newFood.set('size', [foodSize,foodSize]);
     newFood.set('C', [CC[0], CC[1], CC[2]]);
     newFood.set('draw', ()=>{
         const C = newFood.get('C');
@@ -114,9 +115,9 @@ creatures.set('new', ()=>{
     newCreature.set('rad', creatureStartRad);
     newCreature.set('dir', random()*360); //degrees from East clockwise
     newCreature.set('speed', 0);
-    newCreature.set('topSpeed', 0.03)
+    newCreature.set('topSpeed', 0.1)
     newCreature.set('accel', 0.001);
-    newCreature.set('rotSpeed', 01);
+    newCreature.set('rotSpeed', 2);
     newCreature.set('rotTopSpeed', 1);
     newCreature.set('rotAccel', 0.02);
     newCreature.set('gen', 0);
@@ -169,7 +170,8 @@ creatures.set('calc', ()=>{
             //TODO fix for finding targets across canvas border
             food.forEach((val, key2)=>{
                 if(!isNaN(key2)){
-                    const fpos = food.get(key2).get('pos')
+                    const fpos1 = food.get(key2).get('pos')
+                    const fpos = [fpos1[0]+foodSize/2, fpos1[1]+foodSize/2]
                     const diff = [fpos[0]-pos[0], fpos[1]-pos[1]]
                     if(diff[0]>=50){diff[0]-=100}
                     if(diff[0]<-50){diff[0]+=100}
@@ -187,7 +189,8 @@ creatures.set('calc', ()=>{
 
             //rotate toward target
             if(closest > -1){
-                const fpos = food.get(closest).get('pos')
+                const fpos1 = food.get(closest).get('pos')
+                const fpos = [fpos1[0]+foodSize/2, fpos1[1]+foodSize/2]
                 const diff = [fpos[0]-pos[0], fpos[1]-pos[1]]
                 if(diff[0]>=50){diff[0]-=100}
                 if(diff[0]<-50){diff[0]+=100}
@@ -211,15 +214,8 @@ creatures.set('calc', ()=>{
                     theCreature.set('dir', dir + diffAngle)
                 }
 
-                console.log(diffAngle)
 
-                //TODO verify working
-                // const rotAccel = theCreature.get('rotAccel')
-                // const rotDir = sign(diffAngle)
-                // var newRotSpeed = rotSpeed+rotAccel*rotDir
-                // newRotSpeed = (newRotSpeed > theCreature.get('rotTopSpeed'))? theCreature.get('rotTopSpeed') : newRotSpeed
-                // newRotSpeed = (newRotSpeed < (-theCreature.get('rotTopSpeed')))? (-theCreature.get('rotTopSpeed')) : newRotSpeed
-                // theCreature.set('rotSpeed', newRotSpeed)
+                //TODO apply rotation acceleration according to sign of diff angle
             }
 
             
