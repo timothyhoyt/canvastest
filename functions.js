@@ -1,7 +1,9 @@
 
 
 //imported functions
-const abs = Math.abs; const sign = Math.sign; const atan2 = Math.atan2; const PI = Math.PI; const sqrt = Math.sqrt; const random = Math.random; const sin = Math.sin; const cos = Math.cos;
+const abs = Math.abs; const sign = Math.sign; const atan2 = Math.atan2; 
+const PI = Math.PI; const sqrt = Math.sqrt; const random = Math.random; 
+const sin = Math.sin; const cos = Math.cos; const ceil = Math.ceil;
 
 //////////////////
 //functions

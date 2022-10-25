@@ -1,6 +1,6 @@
 
 //app constants
-const foodRate = 200; // how many new foods per second, limited by frame rate
+const foodRate = 20; // how many new foods per second, limited by frame rate
 const foodTime = 1/foodRate;
 const startFood = 10;
 const startCreatures = 10;
@@ -14,6 +14,12 @@ var time = 0;
 
 //Main Animation Loop
 const mainLoop = function(){
+    const currTime = new Date();
+    const lapse = currTime - startTime
+    const frameLapse = lapse - dlastLapse
+    
+    //dfps calc
+    dfps = ceil(1000/frameLapse)
 
     //clearframe
     ctx.fillStyle = "rgb(0, 0, 0)"; ctx.fillRect(0, 0, cWidth, cHeight);
@@ -28,16 +34,32 @@ const mainLoop = function(){
     fillCirRel([mX, mY, 0.5], 'rgba(255,255,255,0.5)')
 
     //TODO FPS display
+    
+
+    cfpsframe++;
+    if(cfpsframe > 10){
+        cfpsframe = 0;
+        cfpsdiv.textContent = cfps.toString()
+    }
+    dfpsframe++;
+    if(dfpsframe > 10){
+        dfpsframe = 0;
+        dfpsdiv.textContent = dfps.toString()
+    }
 
     //next frame
     window.requestAnimationFrame(mainLoop);
+    dlastLapse = lapse;
 }
 
-var lastLapse = 0;
+
 const timeLoop = function(){
     const currTime = new Date();
     const lapse = currTime - startTime
-    //TODO fps calc
+    const frameLapse = lapse - clastLapse
+    
+    //cfps calc
+    cfps = ceil(1000/frameLapse)
 
     //per frame constants
     const seconds = (lapse)/1000
@@ -58,7 +80,7 @@ const timeLoop = function(){
 
     //next frame
     setTimeout(timeLoop, 0)
-    lastLapse = lapse;
+    clastLapse = lapse;
 }
 
 
@@ -105,8 +127,8 @@ creatures.set('new', ()=>{
     newCreature.set('topSpeed', 0.1)
     newCreature.set('accel', 0.001);
     newCreature.set('rotSpeed', 0);
-    newCreature.set('rotTopSpeed', 3);
-    newCreature.set('rotAccel', 0.02);
+    newCreature.set('rotTopSpeed', 1);
+    newCreature.set('rotAccel', 0.01);
     newCreature.set('gen', 0);
     newCreature.set('fam', fam);
     const h = 360/startCreatures*fam+5
