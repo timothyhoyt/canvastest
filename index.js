@@ -1,11 +1,13 @@
 
 //app constants
-const foodRate = 3; // how many new foods per second, limited by frame rate
+const foodRate = 200; // how many new foods per second, limited by frame rate
 const foodTime = 1/foodRate;
 const startFood = 10;
 const startCreatures = 10;
-const creatureStartRad = 2;
-const foodSize = 2;
+const creatureStartRad = 1.5;
+const foodSize = 1;
+const creatureGrowth = 1.1;
+const creatureMaxRad = 5;
 
 //app variables
 var time = 0;
@@ -157,10 +159,16 @@ creatures.set('calc', ()=>{
                 const fpos1 = theTarget.get('pos')
                 const fpos = [fpos1[0]+foodSize/2, fpos1[1]+foodSize/2]
                 const eatDist = dist(fpos, pos)
-                if(eatDist < theCreature.get('rad')){
+                const creRad = theCreature.get('rad')
+                if(eatDist < creRad){
                     // console.log('creature', key, 'ate food', targetNum)
                     const prevScore = theCreature.get('score')
                     theCreature.set('score',prevScore+1)
+                    var newRad = creRad*creatureGrowth;
+                    if(newRad > creatureMaxRad){
+                        newRad = creatureMaxRad
+                    }
+                    theCreature.set('rad', newRad)
                     // console.log('new score', prevScore+1)
                     food.delete(targetNum)
                     // console.log('target set to -1')
@@ -249,6 +257,8 @@ creatures.set('calc', ()=>{
             var newSpeed = theCreature.get('speed')+theCreature.get('accel')
             newSpeed = (newSpeed > theCreature.get('topSpeed'))? theCreature.get('topSpeed') : newSpeed
             theCreature.set('speed', newSpeed)
+
+            //TODO starve creature
         }
     })
 })
