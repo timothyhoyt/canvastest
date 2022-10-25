@@ -1,7 +1,7 @@
 
 
 //imported functions
-const PI = Math.PI; const sqrt = Math.sqrt; const random = Math.random; const sin = Math.sin; const cos = Math.cos;
+const abs = Math.abs; const sign = Math.sign; const atan2 = Math.atan2; const PI = Math.PI; const sqrt = Math.sqrt; const random = Math.random; const sin = Math.sin; const cos = Math.cos;
 
 //////////////////
 //functions
@@ -35,7 +35,13 @@ const vecLen = function(theVec){return dist(theVec, [0,0])}
 const degToRad = function(deg){return (deg/180*PI)%(2*PI)};
 const radToDeg = function(rad){return (rad/PI*180)%(360)};
 
-
+//P1 is the creature, P2 is the food
+const degAtan2 = function(P1, P2){ 
+    var ang = radToDeg(atan2(P2[1]-P1[1], P2[0]-P1[0]))
+    if (ang < 0){ang+=360}
+    if (ang >=360){ang-=360}
+    return ang
+}
 
 
 const onMouseDownCanvas = function(){ 
