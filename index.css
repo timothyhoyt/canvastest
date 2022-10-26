@@ -19,3 +19,11 @@ main {
 #theCanvas{
     cursor: none;
 }
+
+.hide{
+    background-color: black;
+    color: white;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+}

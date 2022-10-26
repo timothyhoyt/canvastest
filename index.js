@@ -290,6 +290,7 @@ creatures.set('clone',(which)=>{
     const newCreature = new Map(creatures.get(which))
     newCreature.set('num', num)
     newCreature.set('target', -1)
+    newCreature.set('targetPos', [0,0])
     newCreature.set('speed', 0)
     newCreature.set('rotSpeed',0)
     newCreature.set('score', 0)

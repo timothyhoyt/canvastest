@@ -46,6 +46,11 @@ const degAtan2 = function(P1, P2){
 }
 
 
+hideButton.onclick = function(){
+    menuHidden = !menuHidden
+    setStyles();
+}
+
 const onMouseDownCanvas = function(){ 
     console.log("Canvas Clicked:",mdX, mdY);
     creatures.get('clone')(2);
@@ -87,8 +92,10 @@ onmousemove = (e) => {
 const setStyles = function(){
     //default (normal horizontal)
     const menuMin = 0.3;
-    var marg, canH, canW, canT, menH, menW, menL
-    marg = (wHeight*0.01); canH = (wHeight-marg*2); canW = canH;
+    var  canH, canW, canT, menH, menW, menL
+    marg = (wHeight*0.01); 
+    
+    canH = (wHeight-marg*2); canW = canH;
     canT = marg; canL = marg; menW = (wWidth - canW - marg*3); 
     menH = wHeight - marg*2; menL = canW + marg*2;
 
@@ -98,6 +105,25 @@ const setStyles = function(){
             menW = wWidth*menuMin; canW = wWidth - menW - marg*3;
             canH = canW; menL = canW + marg*2; canT = wHeight/2 - canH/2;
         }
+
+        if(menuHidden){
+            menudiv.style.display = "none";
+            maindiv.appendChild(hideButton);
+            hideButton.style.top = null
+            hideButton.style.bottom = marg+"px";
+            hideButton.style.left = "calc(100% - 100px - "+marg.toString()+"px)";
+            hideButton.style.right = null;
+            hideButton.textContent = "Show Menu"
+        }else{
+            menudiv.style.display = "block";
+            menudiv.appendChild(hideButton);
+            hideButton.style.top = null
+            hideButton.style.bottom = 0;
+            hideButton.style.right = null;
+            hideButton.style.left = 0;
+            hideButton.textContent = "Hide Menu"
+        }
+
     }else{
         //vertical
         if(wHeight > (wWidth + marg + menuMin*wHeight)){
@@ -110,6 +136,24 @@ const setStyles = function(){
             canH = wHeight - menH - marg*3; canW = canH;  
             canT = menH + marg*2; canL = wWidth/2 - canW/2;
         }
+
+        if(menuHidden){
+            menudiv.style.display = "none";
+            maindiv.appendChild(hideButton);
+            hideButton.style.top = marg+"px"
+            hideButton.style.bottom = null;
+            hideButton.style.left = marg+"px";
+            hideButton.style.right = null;
+            hideButton.textContent = "Show Menu"
+        }else{
+            menudiv.style.display = "block";
+            menudiv.appendChild(hideButton);
+            hideButton.style.top = null
+            hideButton.style.bottom = 0;
+            hideButton.style.left = 0;
+            hideButton.style.right = null;
+            hideButton.textContent = "Hide Menu"
+        }
     }
 
     canvas.style.width = canW.toString()+"px";  canvas.style.height = canH.toString()+"px";
@@ -117,6 +161,7 @@ const setStyles = function(){
     canvas.style.marginRight = marg.toString()+"px";  
     menudiv.style.left = menL.toString()+"px"; menudiv.style.width = menW.toString()+"px";  
     menudiv.style.height = menH.toString()+"px"; menudiv.style.marginTop = marg.toString()+"px";
+    hideButton.style.height = "20px"; hideButton.style.width = '100px'
 }
 
 
