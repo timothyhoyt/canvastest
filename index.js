@@ -9,11 +9,12 @@ const foodSize = 1;
 const creatureGrowth = 1.1;
 const creatureStarve = 0.9999;
 const creatureMaxRad = 5;
+const creatureBreedReq = 10;
 
-const accelMut = 0.1;
-const topSpeedMut = 0.1;
-const rotTopSpeedMut = 0.1;
-const rotAccelMut = 0.1;
+const accelMut = 0.4;
+const topSpeedMut = 0.4;
+const rotTopSpeedMut = 0.4;
+const rotAccelMut = 0.4;
 
 //app variables
 var time = 0;
@@ -39,9 +40,8 @@ const mainLoop = function(){
     //cursor
     fillCirRel([mX, mY, 0.5], 'rgba(255,255,255,0.5)')
 
-    //TODO FPS display
-    
 
+    //FPS display update
     cfpsframe++;
     if(cfpsframe > 10){
         cfpsframe = 0;
@@ -123,6 +123,7 @@ creatures.set('new', ()=>{
     const newCreature = new Map();
     creatures.set(num, newCreature);
     newCreature.set('num',num)
+    newCreature.set('breedCount',0);
     newCreature.set('score', 0);
     newCreature.set('target', -1);
     newCreature.set('targetPos', [0,0])
@@ -159,13 +160,20 @@ creatures.set('draw',()=>{
             const pos2 = [pos[0]+rad2*cos(radDir), pos[1]+rad2*sin(radDir)]
             cir2 = [pos2[0], pos2[1], 0.2*rad];
             fillCirRel(cir2, 'rgba(255,255,255,0.5)')
+
             const fsize = (rad*4)
             ctx.font = 'bold '+ ceil((fsize).toString()) + 'px serif'
             ctx.fillStyle = 'black'
+
             const score = theCreat.get('score')
             const txs = pos[0]/100*cWidth - fsize/4*score.toString().length
-            const tys = pos[1]/100*cHeight + fsize/5*1.5
+            const tys = pos[1]/100*cHeight + fsize/2*1.5
             ctx.fillText(score, txs, tys)
+            
+            const gen = theCreat.get('gen')
+            const txg = pos[0]/100*cWidth - fsize/4*gen.toString().length
+            const tyg = pos[1]/100*cHeight - fsize/8*1.5
+            ctx.fillText(gen, txg, tyg)
         }
     })
 })
@@ -201,7 +209,13 @@ creatures.set('calc', ()=>{
                     var newRad = creRad*creatureGrowth;
                     if(newRad > creatureMaxRad){
                         newRad = creatureMaxRad
-                        creatures.get('clone')(theCreature)
+                        theCreature.set('breedCount', theCreature.get('breedCount')+1)
+                        if(theCreature.get('breedCount') >= creatureBreedReq){
+                            theCreature.set('breedCount',0)
+                            creatures.get('clone')(theCreature)
+
+                        }
+                        
                     }
                     theCreature.set('rad', newRad)
                     food.delete(targetNum)
@@ -308,6 +322,7 @@ creatures.set('clone',(which)=>{ //which is actual creature Map
     newCreature.set('speed', 0)
     newCreature.set('rotSpeed',0)
     newCreature.set('score', 0)
+    newCreature.set('breedCount',0)
     const oldpos = which.get('pos')
     const olddir = which.get('dir')
     const olddirrad = degToRad(olddir)
