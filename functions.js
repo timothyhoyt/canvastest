@@ -99,12 +99,15 @@ onmousemove = (e) => {
 const setStyles = function(){
     //default (normal horizontal)
     const menuMin = 0.3;
-    var  canH, canW, canT, menH, menW, menL
+    var  canH, canW, canT, menH, menW, menL, hBH, hBW
     marg = (wHeight*0.01); 
     
     canH = (wHeight-marg*2); canW = canH;
     canT = marg; canL = marg; menW = (wWidth - canW - marg*3); 
     menH = wHeight - marg*2; menL = canW + marg*2;
+
+    hBH = menH*0.05;
+    hBW = menH*0.5;
 
     if(orien == "horizontal"){
         if(wWidth < (wHeight + marg + menuMin*wWidth)){
@@ -113,14 +116,18 @@ const setStyles = function(){
             canH = canW; menL = canW + marg*2; canT = wHeight/2 - canH/2;
         }
 
+        hBH = menH*0.05;
+        hBW = menH*0.2;
+
         if(menuHidden){
             menudiv.style.display = "none";
             maindiv.appendChild(hideButton);
             hideButton.style.top = null
             hideButton.style.bottom = marg+"px";
-            hideButton.style.left = "calc(100% - 100px - "+marg.toString()+"px)";
+            hideButton.style.left = "calc(100% - "+hBW.toString()+"px - "+marg.toString()+"px)";
             hideButton.style.right = null;
             hideButton.textContent = "Show Menu"
+            canL = wWidth/2-canW/2
         }else{
             menudiv.style.display = "block";
             menudiv.appendChild(hideButton);
@@ -130,6 +137,8 @@ const setStyles = function(){
             hideButton.style.left = 0;
             hideButton.textContent = "Hide Menu"
         }
+
+        
 
     }else{
         //vertical
@@ -144,6 +153,9 @@ const setStyles = function(){
             canT = menH + marg*2; canL = wWidth/2 - canW/2;
         }
 
+        hBH = menH*0.15;
+        hBW = menH*0.5;
+
         if(menuHidden){
             menudiv.style.display = "none";
             maindiv.appendChild(hideButton);
@@ -152,6 +164,7 @@ const setStyles = function(){
             hideButton.style.left = marg+"px";
             hideButton.style.right = null;
             hideButton.textContent = "Show Menu"
+            canT = (wHeight-hBH)/2+hBH-canH/2
         }else{
             menudiv.style.display = "block";
             menudiv.appendChild(hideButton);
@@ -161,6 +174,7 @@ const setStyles = function(){
             hideButton.style.right = null;
             hideButton.textContent = "Hide Menu"
         }
+
     }
 
     canvas.style.width = canW.toString()+"px";  canvas.style.height = canH.toString()+"px";
@@ -168,7 +182,9 @@ const setStyles = function(){
     canvas.style.marginRight = marg.toString()+"px";  
     menudiv.style.left = menL.toString()+"px"; menudiv.style.width = menW.toString()+"px";  
     menudiv.style.height = menH.toString()+"px"; menudiv.style.marginTop = marg.toString()+"px";
-    hideButton.style.height = "20px"; hideButton.style.width = '100px'
+    hideButton.style.height = hBH.toString()+ "px"; hideButton.style.width = hBW.toString() + 'px'
+    hideButton.style.fontSize = (hBH*0.5).toString()+'px';
+    hideButton.style.padding = '0px'
 }
 
 
