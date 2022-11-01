@@ -1,13 +1,19 @@
 
 //app constants
-const foodRate = 20; // how many new foods per second, limited by frame rate
+const foodRate = 10; // how many new foods per second, limited by frame rate
 const foodTime = 1/foodRate;
 const startFood = 10;
 const startCreatures = 10;
 const creatureStartRad = 1.5;
 const foodSize = 1;
 const creatureGrowth = 1.1;
+const creatureStarve = 0.9999;
 const creatureMaxRad = 5;
+
+const accelMut = 0.1;
+const topSpeedMut = 0.1;
+const rotTopSpeedMut = 0.1;
+const rotAccelMut = 0.1;
 
 //app variables
 var time = 0;
@@ -133,17 +139,19 @@ creatures.set('new', ()=>{
     newCreature.set('fam', fam);
     const h = 360/startCreatures*fam+5
     newCreature.set('C', ['hsl('+ h +',100%,80%, 0.5)', 'hsl('+ h +',100%,50%, 0.5)', 'hsl('+ h +',100%,70%, 0.5)']);
+    creatures.get('mutate')(newCreature)
     creatures.set('numFams', fam+1);
     creatures.set('last', num+1)
 })
 creatures.set('draw',()=>{
     creatures.forEach((val,key)=>{
         if(!isNaN(key)){
-            const C = creatures.get(key).get('C');
-            const pos = creatures.get(key).get('pos');
-            const rad = creatures.get(key).get('rad');
+            const theCreat = creatures.get(key)
+            const C = theCreat.get('C');
+            const pos = theCreat.get('pos');
+            const rad = theCreat.get('rad');
             const cir1 = [pos[0], pos[1], rad];
-            const dir = creatures.get(key).get('dir');
+            const dir = theCreat.get('dir');
             const radDir = degToRad(dir);
             var cirC = mouseDownCan? mouseOverCir(cir1)? C[0] : C[1] : mouseOverCir(cir1)? C[2] : C[1]
             fillCirRel(cir1, cirC);
@@ -151,6 +159,13 @@ creatures.set('draw',()=>{
             const pos2 = [pos[0]+rad2*cos(radDir), pos[1]+rad2*sin(radDir)]
             cir2 = [pos2[0], pos2[1], 0.2*rad];
             fillCirRel(cir2, 'rgba(255,255,255,0.5)')
+            const fsize = (rad*4)
+            ctx.font = 'bold '+ ceil((fsize).toString()) + 'px serif'
+            ctx.fillStyle = 'black'
+            const score = theCreat.get('score')
+            const txs = pos[0]/100*cWidth - fsize/4*score.toString().length
+            const tys = pos[1]/100*cHeight + fsize/5*1.5
+            ctx.fillText(score, txs, tys)
         }
     })
 })
@@ -175,25 +190,21 @@ creatures.set('calc', ()=>{
 
             //TODO eat target if close enough
             if(targetNum > -1){
-                // console.log('checking distance to target', targetNum)
                 const theTarget = food.get(targetNum)
-                // console.log(theTarget)
                 const fpos1 = theTarget.get('pos')
                 const fpos = [fpos1[0]+foodSize/2, fpos1[1]+foodSize/2]
                 const eatDist = dist(fpos, pos)
                 const creRad = theCreature.get('rad')
                 if(eatDist < creRad){
-                    // console.log('creature', key, 'ate food', targetNum)
                     const prevScore = theCreature.get('score')
                     theCreature.set('score',prevScore+1)
                     var newRad = creRad*creatureGrowth;
                     if(newRad > creatureMaxRad){
                         newRad = creatureMaxRad
+                        creatures.get('clone')(theCreature)
                     }
                     theCreature.set('rad', newRad)
-                    // console.log('new score', prevScore+1)
                     food.delete(targetNum)
-                    // console.log('target set to -1')
                     creatures.forEach((val,key3)=>{
                         if(!isNaN(key3)){
                             const clearCreature = creatures.get(key3)
@@ -205,7 +216,7 @@ creatures.set('calc', ()=>{
                     })
                 }
             }
-            // console.log('post eat')
+
             //find next target
             var closest = -1;
             var closestD = 99999999;
@@ -259,7 +270,6 @@ creatures.set('calc', ()=>{
                     if(newDir < 0){newDir+=360}
                     if(newDir >=360){newDir-=360}
                     theCreature.set('dir',newDir)
-                    // console.log('rotating')
                 }
 
                 //apply rotAccel
@@ -271,7 +281,6 @@ creatures.set('calc', ()=>{
                     if(newRotSpeed<0){newRotSpeed = 0}
                     if(newRotSpeed>rotTopSpeed){newRotSpeed = rotTopSpeed}
                     theCreature.set('rotSpeed',newRotSpeed)
-                    // console.log('adjusting rotspeed', newRotSpeed)
                 }
             }
 
@@ -280,28 +289,52 @@ creatures.set('calc', ()=>{
             newSpeed = (newSpeed > theCreature.get('topSpeed'))? theCreature.get('topSpeed') : newSpeed
             theCreature.set('speed', newSpeed)
 
-            //TODO starve creature
+            //Starve creature
+            theCreature.set('rad',theCreature.get('rad')*creatureStarve);
+            if(theCreature.get('rad') < 1){
+                console.log('creature', key, 'STARVED TO DEATH');
+                creatures.delete(key)
+            }
         }
     })
 })
 
-creatures.set('clone',(which)=>{
+creatures.set('clone',(which)=>{ //which is actual creature Map
     const num = creatures.get('last')
-    const newCreature = new Map(creatures.get(which))
+    const newCreature = new Map(which)
     newCreature.set('num', num)
     newCreature.set('target', -1)
     newCreature.set('targetPos', [0,0])
     newCreature.set('speed', 0)
     newCreature.set('rotSpeed',0)
     newCreature.set('score', 0)
-    const oldpos = newCreature.get('pos')
-    const olddir = newCreature.get('dir')
+    const oldpos = which.get('pos')
+    const olddir = which.get('dir')
     const olddirrad = degToRad(olddir)
     newCreature.set('pos', [ oldpos[0]-5*cos(olddirrad), oldpos[1]-5*sin(olddirrad)])
     newCreature.set('dir', olddir +90 + random()*180)
     newCreature.set('gen', newCreature.get('gen')+1)
     newCreature.set('rad', creatureStartRad)
+    creatures.get('mutate')(newCreature)
     creatures.set(num, newCreature)
     creatures.set('last', num+1)
+})
+
+creatures.set('mutate', (which)=>{ //which is actual creature Map
+    var newTopSpeed = which.get('topSpeed')
+    var newAccel = which.get('accel');
+    var newRotTopSpeed = which.get('rotTopSpeed');
+    var newRotAccel = which.get('rotAccel');
+
+    newTopSpeed*=(1+randUpDown(topSpeedMut))
+    newAccel*=(1+randUpDown(accelMut))
+    newRotTopSpeed*=(1+randUpDown(rotTopSpeedMut))
+    newRotAccel*=(1+randUpDown(rotAccelMut))
+
+    which.set('topSpeed', newTopSpeed)
+    which.set('accel', newAccel)
+    which.set('rotTopSpeed', newRotTopSpeed)
+    which.set('rotAccel', newRotAccel)
+    console.log('creature',which.get('num'), 'mutated')
 })
 
