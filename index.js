@@ -53,6 +53,33 @@ const mainLoop = function(){
         dfpsdiv.textContent = dfps.toString()
     }
 
+    //stats update
+    for(var i=statsTab.rows.length-1; i>0; i--){
+        statsTab.deleteRow(i)
+    }
+    const numFams = creatures.get('numFams')
+    const memCounts = new Array(numFams).fill(0);
+    const maxGen = new Array(numFams).fill(0);
+
+    creatures.forEach((val, key5)=>{
+        if(!isNaN(key5)){
+            const cr = creatures.get(key5)
+            const fam = cr.get('fam')
+            memCounts[fam]++
+            const gen = cr.get('gen')
+            if(gen > maxGen[fam]){maxGen[fam] = gen}
+        }
+    })
+
+    for(var i = 0; i < numFams; i++){
+        const row = statsTab.insertRow(i+1)
+        const h = 360/startCreatures*i+5;
+        row.style.backgroundColor = 'hsl('+ h.toString() +',100%,25%)';
+        row.insertCell(0).innerHTML = maxGen[i]
+        row.insertCell(1).innerHTML = memCounts[i]
+        
+    }
+
     //next frame
     window.requestAnimationFrame(mainLoop);
     dlastLapse = lapse;

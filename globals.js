@@ -5,9 +5,10 @@
 //primary elements
 const maindiv = document.getElementsByTagName('main')[0]; const canvas = document.createElement('canvas');
 const ctx = canvas.getContext("2d"); const menudiv = document.getElementById('theMenu')
-const cfpsdiv = document.getElementsByClassName('cfps')[0]
-const dfpsdiv = document.getElementsByClassName('dfps')[0]
-const hideButton = document.getElementsByClassName('hide')[0];
+const cfpsdiv = document.getElementById('cfps')
+const dfpsdiv = document.getElementById('dfps')
+const statsTab = document.getElementById('stats')
+const hideButton = document.getElementById('hide');
 
 
 //universal constants

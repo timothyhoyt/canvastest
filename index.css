@@ -15,16 +15,51 @@ main {
     background-color: rgb(128,128,128);
     position: absolute;
 }
-  
-#theCanvas{
-    cursor: none;
+
+#start{
+    background-color: black;
+    color: white;
 }
 
-.hide{
+#fps{
+    position: absolute;
+    right: 0;
+    bottom: 0;
+}
+
+#fps, #cfps-label, #dfps-label{
+    display: flex;
+}
+
+#cfps{
+    margin-right: 1vw;
+}
+
+#stats{
+    position: absolute;
+    right: 0;
+    top: 0;
+    background-color: black;
+    color: white;
+    padding: 0px;
+    border-spacing: 0px;
+    
+}
+
+.cell{
+    border: solid 1px white;
+    margin: 0px;
+}
+#hide{
     background-color: black;
     color: white;
     position: absolute;
     bottom: 0;
     left: 0;
-    /* font-size: 50%; */
+}
+
+
+
+#theCanvas{
+    cursor: none;
 }
