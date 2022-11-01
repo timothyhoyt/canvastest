@@ -115,6 +115,7 @@ food.set("new", ()=>{
 
 const creatures = new Map();
 creatures.set('last', 0);
+creatures.set('highScore', 0);
 creatures.set('numFams',0);
 creatures.set('new', ()=>{
     //build first creature of new family
@@ -174,10 +175,17 @@ creatures.set('draw',()=>{
             const txg = pos[0]/100*cWidth - fsize/4*gen.toString().length
             const tyg = pos[1]/100*cHeight - fsize/8*1.5
             ctx.fillText(gen, txg, tyg)
+
+            //TODO highscore highlight
+            if(score >= creatures.get('highScore')){
+                const cir3 = [pos[0], pos[1], rad*1.2];
+                strokeCirRel(cir3,'rgba(255,255,255,0.5)',3)
+            }
         }
     })
 })
 creatures.set('calc', ()=>{
+    
     creatures.forEach((val,key)=>{
         if(!isNaN(key)){
             //move
@@ -206,6 +214,10 @@ creatures.set('calc', ()=>{
                 if(eatDist < creRad){
                     const prevScore = theCreature.get('score')
                     theCreature.set('score',prevScore+1)
+                    if((prevScore+1)>creatures.get('highScore')){
+                        creatures.set('highScore',prevScore+1)
+                    }
+
                     var newRad = creRad*creatureGrowth;
                     if(newRad > creatureMaxRad){
                         newRad = creatureMaxRad
@@ -307,7 +319,20 @@ creatures.set('calc', ()=>{
             theCreature.set('rad',theCreature.get('rad')*creatureStarve);
             if(theCreature.get('rad') < 1){
                 console.log('creature', key, 'STARVED TO DEATH');
+                const deadScore = theCreature.get('score');
                 creatures.delete(key)
+                if(deadScore >= creatures.get('highScore')){
+                    //TODO find new highscore from remaining creatures
+                    creatures.set('highScore',0)
+                    var newHighScore = 0;
+                    creatures.forEach((val,key4)=>{
+                        if(!isNaN(key4)){
+                            const cre = creatures.get(key4);
+                            if(cre.get('score') > newHighScore){ newHighScore = cre.get('score')}
+                        }
+                    })
+                    creatures.set('highScore', newHighScore)
+                }
             }
         }
     })

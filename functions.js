@@ -26,6 +26,12 @@ const moveShapeByVec = function(theShape, theVec){
 
 const fillRectRel = function(rect,c){ ctx.fillStyle = c; ctx.fillRect(rect[0]/100*cWidth,rect[1]/100*cHeight,rect[2]/100*cWidth,rect[3]/100*cHeight);}
 const fillCirRel = function (cir,c){ctx.beginPath(); ctx.arc(cir[0]/100*cWidth, cir[1]/100*cHeight, cir[2]/100*cHeight, 0, 2 * Math.PI, false);ctx.fillStyle = c;  ctx.fill(); ctx.lineWidth = 1; ctx.strokeStyle = 'rgba(0,0,0,0)';  ctx.stroke();}
+const strokeCirRel = function (cir,c,w){ //w is line width
+    ctx.beginPath(); 
+    ctx.arc(cir[0]/100*cWidth, cir[1]/100*cHeight, cir[2]/100*cHeight, 0, 2 * Math.PI, false);
+    ctx.lineWidth = w; ctx.strokeStyle = c;  ctx.stroke();
+}
+
 const checkorien = function(){if(wWidth >= wHeight) {orien = "horizontal"} else {orien = "vertical"}; setStyles()}
 const readWindowSize = function(){ wWidth = window.innerWidth; wHeight = window.innerHeight;}
 const vecDiff = function(vecTo, vecFrom){return [ vecTo[0]-vecFrom[0] , vecTo[1]-vecFrom[1] ]}
