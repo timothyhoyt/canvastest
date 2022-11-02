@@ -54,10 +54,25 @@ const degAtan2 = function(P1, P2){
 
 
 familySlider.oninput = function(){
-    famililyNumDiv.innerHTML = this.value;
+    familyNumDiv.innerHTML = this.value;
     startCreatures = this.value;
 }
 
+foodStartSlider.oninput = function(){
+    foodStartNumDiv.innerHTML = this.value;
+    startFood = this.value;
+}
+
+foodRateSlider.oninput = function(){
+    foodRateNumDiv.innerHTML = this.value;
+    // foodRate = this.value;
+    // foodTime = 1/foodRate;
+}
+
+foodBreedSlider.oninput = function(){
+    foodBreedNumDiv.innerHTML = this.value;
+    // creatureBreedReq = this.value;
+}
 
 startButton.onclick = function(){
     reset();

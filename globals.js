@@ -30,9 +30,14 @@ const creatureButton = document.getElementById('creatureButton');
 
 const startButton = document.getElementById('startButton');
 
-const familySlider = document.getElementById('familySlider')
-const famililyNumDiv = document.getElementById('familyNumber')
-
+const familySlider = document.getElementById('familyCountSlider')
+const familyNumDiv = document.getElementById('familyCountNumber')
+const foodStartSlider = document.getElementById('foodStartCountSlider')
+const foodStartNumDiv = document.getElementById('foodStartCountNumber')
+const foodRateSlider = document.getElementById('foodRateSlider')
+const foodRateNumDiv = document.getElementById('foodRateNumber')
+const foodBreedSlider = document.getElementById('foodBreedCountSlider')
+const foodBreedNumDiv = document.getElementById('foodBreedCountNumber')
 
 //universal constants
 const CC = [ 'rgba(100,200,255,0.50)', 'rgba(100,100,255,0.50)', 'rgba(100,50,200,0.50)', 'rgba(50,100,255,0.50)'

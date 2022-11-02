@@ -22,15 +22,43 @@
 
       <div id="setup" class="page">
         <button id="startButton" class="button">Restart</button>
+        <div id="sliderColumns">
+          <div id="sliderGroupLeft" class="slider-group">
+            <div id = 'familyCount' class="slider-container">
+              <div id = 'familyCountLabel' class = 'slider-label'>
+                <div id="familyCountText" class="slider-text">Family Count:</div>
+                <div id="familyCountNumber" class="slider-number">6</div>
+              </div>
+              <input type="range" min="1" max="10" value="6" class="slider" id="familyCountSlider">
+            </div>
 
-        <div id = 'familyCount' class="slider-container">
-          <div id = 'familyCountLabel' class = 'slider-label'>
-            <div id="familyText" class="slider-text">Family Count:</div>
-            <div id="familyNumber" class="slider-number">6</div>
+            <div id = 'foodStartCount' class="slider-container">
+              <div id = 'foodStartCountLabel' class = 'slider-label'>
+                <div id="foodStartCountText" class="slider-text">Starting Food:</div>
+                <div id="foodStartCountNumber" class="slider-number">100</div>
+              </div>
+              <input type="range" min="1" max="1000" value="100" class="slider" id="foodStartCountSlider">
+            </div>
           </div>
-          <input type="range" min="1" max="10" value="6" class="slider" id="familySlider">
-        </div>
 
+          <div id="sliderGroupRight" class="slider-group">
+            <div id = 'foodRate' class="slider-container">
+              <div id = 'foodRateLabel' class = 'slider-label'>
+                <div id="foodRateText" class="slider-text">Food Rate:</div>
+                <div id="foodRateNumber" class="slider-number">1</div>
+              </div>
+              <input type="range" min="1" max="200" value="1" class="slider" id="foodRateSlider">
+            </div>
+
+            <div id = 'foodBreedCount' class="slider-container">
+              <div id = 'foodBreedCountLabel' class = 'slider-label'>
+                <div id="foodBreedCountText" class="slider-text">Breed Require:</div>
+                <div id="foodBreedCountNumber" class="slider-number">10</div>
+              </div>
+              <input type="range" min="1" max="100" value="10" class="slider" id="foodBreedCountSlider">
+            </div>
+          </div>
+        </div>  
       </div>
 
       <div id='families' class="page">

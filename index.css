@@ -48,7 +48,9 @@ main {
     font-size: 0px;
 }
 
-
+#sliderColumns{
+    display: flex;
+}
 .slider-container{
     display: flex;
     flex-direction: column;

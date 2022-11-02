@@ -1,8 +1,8 @@
 
 //app constants
-var foodRate = 3; // how many new foods per second, limited by frame rate
-const foodTime = 1/foodRate;
-var startFood = 1000;
+var foodRate = 1; // how many new foods per second, limited by frame rate
+var foodTime = 1/foodRate;
+var startFood = 100;
 var startCreatures = 6;
 var creatureStartRad = 1.5;
 var creatureMaxRad = 4;
@@ -132,6 +132,11 @@ const reset = function(){
             creatures.delete(key7)
         }
     })
+
+    foodRate = foodRateSlider.value;
+    foodTime = 1/foodRate;
+
+    creatureBreedReq = foodBreedSlider.value;
 
     firstFrame = true;
 }
