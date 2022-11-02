@@ -54,8 +54,8 @@ const mainLoop = function(){
     }
 
     //stats update
-    for(var i=statsTab.rows.length-1; i>0; i--){
-        statsTab.deleteRow(i)
+    for(var i=familiesStats.rows.length-1; i>0; i--){
+        familiesStats.deleteRow(i)
     }
     const numFams = creatures.get('numFams')
     const memCounts = new Array(numFams).fill(0);
@@ -72,7 +72,7 @@ const mainLoop = function(){
     })
 
     for(var i = 0; i < numFams; i++){
-        const row = statsTab.insertRow(i+1)
+        const row = familiesStats.insertRow(i+1)
         const h = 360/startCreatures*i+5;
         row.style.backgroundColor = 'hsl('+ h.toString() +',100%,25%)';
         row.insertCell(0).innerHTML = maxGen[i]

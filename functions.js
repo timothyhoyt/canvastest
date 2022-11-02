@@ -62,6 +62,36 @@ hideButton.onclick = function(){
     setStyles();
 }
 
+menuButton.onclick = function(){
+    selectedPage.style.display = "none"
+    selectedPage = selectPage 
+    selectedPage.style.display = "flex"
+}
+
+setupButton.onclick = function(){
+    selectedPage.style.display = "none"
+    selectedPage = setupPage;
+    selectedPage.style.display = "block"
+}
+
+familiesButton.onclick = function(){
+    selectedPage.style.display = "none"
+    selectedPage = familiesPage;
+    selectedPage.style.display = "block"
+}
+
+membersButton.onclick = function(){
+    selectedPage.style.display = "none"
+    selectedPage = membersPage;
+    selectedPage.style.display = "block"
+}
+
+creatureButton.onclick = function(){
+    selectedPage.style.display = "none"
+    selectedPage = creaturePage;
+    selectedPage.style.display = "block"
+}
+
 const onMouseDownCanvas = function(){ 
     console.log("Canvas Clicked:",mdX, mdY);
     creatures.get('clone')(2);
@@ -111,7 +141,8 @@ const setStyles = function(){
     menH = wHeight - marg*2; menL = canW + marg*2;
 
     hBH = menH*0.05;
-    hBW = menH*0.5;
+    hBW = menH*0.5/2;
+    
 
     if(orien == "horizontal"){
         if(wWidth < (wHeight + marg + menuMin*wWidth)){
@@ -121,7 +152,7 @@ const setStyles = function(){
         }
 
         hBH = menH*0.05;
-        hBW = menH*0.2;
+        hBW = menH*0.2/2;
 
         if(menuHidden){
             menudiv.style.display = "none";
@@ -130,7 +161,7 @@ const setStyles = function(){
             hideButton.style.bottom = marg+"px";
             hideButton.style.left = "calc(100% - "+hBW.toString()+"px - "+marg.toString()+"px)";
             hideButton.style.right = null;
-            hideButton.textContent = "Show Menu"
+            hideButton.textContent = "Show"
             canL = wWidth/2-canW/2
         }else{
             menudiv.style.display = "block";
@@ -139,7 +170,7 @@ const setStyles = function(){
             hideButton.style.bottom = 0;
             hideButton.style.right = null;
             hideButton.style.left = 0;
-            hideButton.textContent = "Hide Menu"
+            hideButton.textContent = "Hide"
         }
 
         
@@ -158,7 +189,7 @@ const setStyles = function(){
         }
 
         hBH = menH*0.15;
-        hBW = menH*0.5;
+        hBW = menH*0.5/2;
 
         if(menuHidden){
             menudiv.style.display = "none";
@@ -167,7 +198,7 @@ const setStyles = function(){
             hideButton.style.bottom = null;
             hideButton.style.left = marg+"px";
             hideButton.style.right = null;
-            hideButton.textContent = "Show Menu"
+            hideButton.textContent = "Show"
             canT = (wHeight-hBH)/2+hBH-canH/2
         }else{
             menudiv.style.display = "block";
@@ -176,9 +207,8 @@ const setStyles = function(){
             hideButton.style.bottom = 0;
             hideButton.style.left = 0;
             hideButton.style.right = null;
-            hideButton.textContent = "Hide Menu"
+            hideButton.textContent = "Hide"
         }
-
     }
 
     canvas.style.width = canW.toString()+"px";  canvas.style.height = canH.toString()+"px";
@@ -186,9 +216,43 @@ const setStyles = function(){
     canvas.style.marginRight = marg.toString()+"px";  
     menudiv.style.left = menL.toString()+"px"; menudiv.style.width = menW.toString()+"px";  
     menudiv.style.height = menH.toString()+"px"; menudiv.style.marginTop = marg.toString()+"px";
+    
     hideButton.style.height = hBH.toString()+ "px"; hideButton.style.width = hBW.toString() + 'px'
     hideButton.style.fontSize = (hBH*0.5).toString()+'px';
-    hideButton.style.padding = '0px'
+
+    menuButton.style.height = hBH.toString()+ "px"; menuButton.style.width = hBW.toString() + 'px'
+    menuButton.style.fontSize = (hBH*0.5).toString()+'px';
+    menuButton.style.left = (menW/2 - hBW/2).toString() + 'px';
+
+    selectPage.style.height = (menH - hBH).toString() + 'px'
+    setupPage.style.height = (menH - hBH).toString() + 'px'
+    familiesPage.style.height = (menH - hBH).toString() + 'px'
+    membersPage.style.height = (menH - hBH).toString() + 'px'
+    creaturePage.style.height = (menH - hBH).toString() + 'px'
+
+
+    
+    setupButton.style.height = hBH.toString()+ "px"; setupButton.style.width = (hBW*2).toString() + 'px'
+    setupButton.style.fontSize = (hBH*0.5).toString()+'px';
+    setupButton.style.marginBottom = (hBH/10).toString() + "px"
+    
+    familiesButton.style.height = hBH.toString()+ "px"; familiesButton.style.width = (hBW*2).toString() + 'px'
+    familiesButton.style.fontSize = (hBH*0.5).toString()+'px';
+    familiesButton.style.marginBottom = (hBH/10).toString() + "px"
+
+    membersButton.style.height = hBH.toString()+ "px"; membersButton.style.width = (hBW*2).toString() + 'px'
+    membersButton.style.fontSize = (hBH*0.5).toString()+'px';
+    membersButton.style.marginBottom = (hBH/10).toString() + "px"
+
+    creatureButton.style.height = hBH.toString()+ "px"; creatureButton.style.width = (hBW*2).toString() + 'px'
+    creatureButton.style.fontSize = (hBH*0.5).toString()+'px';
+
+
+
+
+    startButton.style.height = hBH.toString()+ "px"; startButton.style.width = (hBW*2).toString() + 'px'
+    startButton.style.fontSize = (hBH*0.5).toString()+'px';
+
 }
 
 

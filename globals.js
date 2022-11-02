@@ -4,12 +4,32 @@
 
 //primary elements
 const maindiv = document.getElementsByTagName('main')[0]; const canvas = document.createElement('canvas');
+
+const selectPage = document.getElementById('select')
+const setupPage = document.getElementById('setup')
+const familiesPage = document.getElementById('families')
+const membersPage = document.getElementById('members')
+const creaturePage = document.getElementById('creature')
+
+var selectedPage = selectPage
+selectedPage.style.display = "flex"
+
+
 const ctx = canvas.getContext("2d"); const menudiv = document.getElementById('theMenu')
 const cfpsdiv = document.getElementById('cfps')
 const dfpsdiv = document.getElementById('dfps')
-const statsTab = document.getElementById('stats')
-const hideButton = document.getElementById('hide');
-const startButton = document.getElementById('start');
+const familiesStats = document.getElementById('familyiesStats')
+
+const hideButton = document.getElementById('hideButton');
+const menuButton = document.getElementById('menuButton')
+
+const setupButton = document.getElementById('setupButton');
+const familiesButton = document.getElementById('familiesButton');
+const membersButton = document.getElementById('membersButton');
+const creatureButton = document.getElementById('creatureButton');
+
+
+const startButton = document.getElementById('startButton');
 
 
 
