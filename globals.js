@@ -28,9 +28,10 @@ const familiesButton = document.getElementById('familiesButton');
 const membersButton = document.getElementById('membersButton');
 const creatureButton = document.getElementById('creatureButton');
 
-
 const startButton = document.getElementById('startButton');
 
+const familySlider = document.getElementById('familySlider')
+const famililyNumDiv = document.getElementById('familyNumber')
 
 
 //universal constants

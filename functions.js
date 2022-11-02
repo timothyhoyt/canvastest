@@ -52,6 +52,13 @@ const degAtan2 = function(P1, P2){
     return ang
 }
 
+
+familySlider.oninput = function(){
+    famililyNumDiv.innerHTML = this.value;
+    startCreatures = this.value;
+}
+
+
 startButton.onclick = function(){
     reset();
 }
@@ -71,7 +78,7 @@ menuButton.onclick = function(){
 setupButton.onclick = function(){
     selectedPage.style.display = "none"
     selectedPage = setupPage;
-    selectedPage.style.display = "block"
+    selectedPage.style.display = "flex"
 }
 
 familiesButton.onclick = function(){

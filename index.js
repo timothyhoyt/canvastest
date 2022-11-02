@@ -1,20 +1,21 @@
 
 //app constants
-const foodRate = 3; // how many new foods per second, limited by frame rate
+var foodRate = 3; // how many new foods per second, limited by frame rate
 const foodTime = 1/foodRate;
-const startFood = 1000;
-const startCreatures = 6;
-const creatureStartRad = 1.5;
-const creatureMaxRad = 4;
+var startFood = 1000;
+var startCreatures = 6;
+var creatureStartRad = 1.5;
+var creatureMaxRad = 4;
 const foodSize = 1;
-const creatureGrowth = 1.07;
-const creatureStarve = 0.9999;
-const creatureBreedReq = 10;
+var creatureGrowth = 1.07;
+var creatureStarve = 0.9999;
+var creatureBreedReq = 10;
 
-const accelMut = 0.4;
-const topSpeedMut = 0.4;
-const rotTopSpeedMut = 0.4;
-const rotAccelMut = 0.4;
+var mutPerc = 0.4;
+const accelMut = mutPerc;
+const topSpeedMut = mutPerc;
+const rotTopSpeedMut = mutPerc;
+const rotAccelMut = mutPerc;
 
 //app variables
 var time = 0;
