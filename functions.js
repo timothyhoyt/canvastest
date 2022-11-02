@@ -52,6 +52,10 @@ const degAtan2 = function(P1, P2){
     return ang
 }
 
+startButton.onclick = function(){
+    reset();
+}
+
 
 hideButton.onclick = function(){
     menuHidden = !menuHidden

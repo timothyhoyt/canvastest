@@ -9,6 +9,8 @@ const cfpsdiv = document.getElementById('cfps')
 const dfpsdiv = document.getElementById('dfps')
 const statsTab = document.getElementById('stats')
 const hideButton = document.getElementById('hide');
+const startButton = document.getElementById('start');
+
 
 
 //universal constants

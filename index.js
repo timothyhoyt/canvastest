@@ -1,14 +1,14 @@
 
 //app constants
-const foodRate = 10; // how many new foods per second, limited by frame rate
+const foodRate = 3; // how many new foods per second, limited by frame rate
 const foodTime = 1/foodRate;
-const startFood = 10;
-const startCreatures = 10;
+const startFood = 1000;
+const startCreatures = 6;
 const creatureStartRad = 1.5;
+const creatureMaxRad = 4;
 const foodSize = 1;
-const creatureGrowth = 1.1;
+const creatureGrowth = 1.07;
 const creatureStarve = 0.9999;
-const creatureMaxRad = 5;
 const creatureBreedReq = 10;
 
 const accelMut = 0.4;
@@ -116,7 +116,24 @@ const timeLoop = function(){
     clastLapse = lapse;
 }
 
+const reset = function(){
+    food.set('last',0);
+    food.forEach((val,key6)=>{
+        if(!isNaN(key6)){
+            food.delete(key6)
+        }
+    })
+    creatures.set('last',0)
+    creatures.set('highScore',0)
+    creatures.set('numFams',0)
+    creatures.forEach((val,key7)=>{
+        if(!isNaN(key7)){
+            creatures.delete(key7)
+        }
+    })
 
+    firstFrame = true;
+}
 
 //app maps (fast objects)
 const food = new Map();
