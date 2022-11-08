@@ -63,16 +63,24 @@ foodStartSlider.oninput = function(){
     startFood = this.value;
 }
 
+starveRateSlider.oninput = function(){
+    starveRateNumDiv.innerHTML = this.value;
+}
+
+
+
 foodRateSlider.oninput = function(){
     foodRateNumDiv.innerHTML = this.value;
-    // foodRate = this.value;
-    // foodTime = 1/foodRate;
 }
 
 foodBreedSlider.oninput = function(){
     foodBreedNumDiv.innerHTML = this.value;
-    // creatureBreedReq = this.value;
 }
+
+mutationRateSlider.oninput = function(){
+    mutationRateNumDiv.innerHTML = this.value + '%';
+}
+
 
 startButton.onclick = function(){
     reset();

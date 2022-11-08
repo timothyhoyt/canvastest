@@ -1,15 +1,15 @@
 
 //app constants
-var foodRate = 1; // how many new foods per second, limited by frame rate
-var foodTime = 1/foodRate;
-var startFood = 100;
-var startCreatures = 6;
+var foodRate = 1; // has slider
+var foodTime = 1/foodRate;   //slider
+var startFood = 100;        //slider
+var startCreatures = 6;     //slider
 var creatureStartRad = 1.5;
 var creatureMaxRad = 4;
 const foodSize = 1;
 var creatureGrowth = 1.07;
-var creatureStarve = 0.9999;
-var creatureBreedReq = 10;
+var creatureStarve = 0.9999;    //slider
+var creatureBreedReq = 10;      //slider
 
 var mutPerc = 0.4;
 const accelMut = mutPerc;
@@ -99,12 +99,7 @@ const timeLoop = function(){
     const seconds = (lapse)/1000
 
     //first frame (app initialization)
-    if(firstFrame){
-        //make start maps items
-        for(var i=0; i<startFood; i++){food.get('new')(); }
-        for(var i=0; i<startCreatures; i++){creatures.get('new')()}
-        firstFrame = false;
-    }
+    if(firstFrame){ reset(); firstFrame = false; }
 
     //food trickle    
     if((seconds-time) > foodTime){ food.get('new')(); time+=foodTime;}
@@ -118,6 +113,7 @@ const timeLoop = function(){
 }
 
 const reset = function(){
+    //clear current
     food.set('last',0);
     food.forEach((val,key6)=>{
         if(!isNaN(key6)){
@@ -133,12 +129,19 @@ const reset = function(){
         }
     })
 
+    //set new
     foodRate = foodRateSlider.value;
     foodTime = 1/foodRate;
-
+    creatureStarve = 1 - starveRateSlider.value/100000
     creatureBreedReq = foodBreedSlider.value;
+    mutPerc = mutationRateSlider.value/100;
 
-    firstFrame = true;
+
+    //make start maps items
+    for(var i=0; i<startFood; i++){food.get('new')(); }
+    for(var i=0; i<startCreatures; i++){creatures.get('new')()}
+
+    // firstFrame = true;
 }
 
 //app maps (fast objects)
