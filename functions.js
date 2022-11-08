@@ -107,7 +107,7 @@ setupButton.onclick = function(){
 familiesButton.onclick = function(){
     selectedPage.style.display = "none"
     selectedPage = familiesPage;
-    selectedPage.style.display = "block"
+    selectedPage.style.display = "flex"
 }
 
 membersButton.onclick = function(){

@@ -48,6 +48,13 @@ main {
     font-size: 0px;
 }
 
+#families{
+    /* display: flex; */
+    align-items: center;
+    justify-content: center;
+    background-color: green;
+}
+
 #sliderColumns{
     display: flex;
 }
@@ -81,14 +88,16 @@ main {
     margin-right: 1vw;
 }
 
-#stats{
-    position: absolute;
-    right: 0;
-    top: 0;
+#familiesStats{
+    
+    
     background-color: black;
     color: white;
     padding: 0px;
     border-spacing: 0px;
+    font-size: 10px;
+    
+    
     
 }
 

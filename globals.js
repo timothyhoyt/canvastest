@@ -18,7 +18,7 @@ selectedPage.style.display = "flex"
 const ctx = canvas.getContext("2d"); const menudiv = document.getElementById('theMenu')
 const cfpsdiv = document.getElementById('cfps')
 const dfpsdiv = document.getElementById('dfps')
-const familiesStats = document.getElementById('familyiesStats')
+const familiesStats = document.getElementById('familiesStats')
 
 const hideButton = document.getElementById('hideButton');
 const menuButton = document.getElementById('menuButton')
