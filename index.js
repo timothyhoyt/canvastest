@@ -55,9 +55,7 @@ const mainLoop = function(){
     }
 
     //stats update
-    for(var i=familiesStats.rows.length-1; i>0; i--){
-        familiesStats.deleteRow(i)
-    }
+    
     const numFams = creatures.get('numFams')
     const memCounts = new Array(numFams).fill(0);
     const maxGen = new Array(numFams).fill(0);
@@ -72,13 +70,48 @@ const mainLoop = function(){
         }
     })
 
-    for(var i = 0; i < numFams; i++){
-        const row = familiesStats.insertRow(i+1)
-        const h = 360/startCreatures*i+5;
-        row.style.backgroundColor = 'hsl('+ h.toString() +',100%,25%)';
-        row.insertCell(0).innerHTML = maxGen[i]
-        row.insertCell(1).innerHTML = memCounts[i]
+    //pupulate family stats
+    // for(var i = 0; i < numFams; i++){
+    //     const row = familiesStats.insertRow(i+1)
+    //     const h = 360/startCreatures*i+5;
+    //     row.style.backgroundColor = 'hsl('+ h.toString() +',100%,25%)';
+    //     row.insertCell(0).innerHTML = maxGen[i]
+    //     row.insertCell(1).innerHTML = memCounts[i]
         
+    // }
+
+    while (familiesPage.firstChild) {
+        familiesPage.removeChild(familiesPage.firstChild);
+    }
+
+    for(var i = -1; i < numFams; i++){
+        const h = 360/startCreatures*i+5;
+        var col = 'hsl('+ h.toString() +',100%,25%)';
+        
+        const famDiv = document.createElement('div')
+        // famDiv.style.display = "flex"
+        famDiv.classList.add("famdiv")
+        famDiv.style.backgroundColor = col;
+        familiesPage.appendChild(famDiv)
+        const genDiv = document.createElement('div')
+        
+        genDiv.classList.add("gendiv")
+        genDiv.innerHTML = maxGen[i]
+        famDiv.appendChild(genDiv);
+        const memDiv = document.createElement('div')
+        memDiv.classList.add("memdiv");
+        memDiv.innerHTML = memCounts[i]
+        famDiv.appendChild(memDiv);
+
+        if(i==-1){
+            col = 'black'; 
+            famDiv.style.color = "white";
+            genDiv.innerHTML = "GEN";
+            memDiv.innerHTML = "MEM"
+        }
+        genDiv.style.backgroundColor = col;
+        memDiv.style.backgroundColor = col;
+
     }
 
     //next frame

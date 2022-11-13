@@ -11,7 +11,7 @@ const familiesPage = document.getElementById('families')
 const membersPage = document.getElementById('members')
 const creaturePage = document.getElementById('creature')
 
-var selectedPage = selectPage
+var selectedPage = familiesPage
 selectedPage.style.display = "flex"
 
 
