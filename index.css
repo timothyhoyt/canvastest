@@ -55,6 +55,7 @@ main {
     justify-content: center;
     font-size: 4vh;
     flex-wrap: wrap;
+    flex-direction: column;
     /* flex-direction: column; */
     /* background-color: green; */
 }

@@ -84,15 +84,43 @@ const mainLoop = function(){
         familiesPage.removeChild(familiesPage.firstChild);
     }
 
+    var leader = 0;
+    var hs = 0;
+    creatures.forEach((val, key8)=>{
+        if(!isNaN(key8)){
+            const crr = creatures.get(key8)
+            const sc = crr.get('score')
+            if(sc>hs){
+                hs = sc;
+                leader = key8;
+            }
+        }
+    })
+
+    const leaderdiv = document.createElement('div')
+    familiesPage.appendChild(leaderdiv)
+    const theleader = creatures.get(leader)
+    
+    if(theleader){
+        const famnum = theleader.get('fam');
+        const hh = 360/startCreatures*famnum+5;
+        var cc = 'hsl('+ hh.toString() +',100%,25%)';
+        leaderdiv.style.backgroundColor = cc
+        leaderdiv.innerHTML = "Leader: Gen: " + theleader.get('gen') + ' Score: ' + theleader.get('score')
+    }
+
+    const statsdiv = document.createElement('div')
+    statsdiv.style.display = "flex"
+    familiesPage.appendChild(statsdiv)
+
     for(var i = -1; i < numFams; i++){
         const h = 360/startCreatures*i+5;
         var col = 'hsl('+ h.toString() +',100%,25%)';
         
         const famDiv = document.createElement('div')
-        // famDiv.style.display = "flex"
         famDiv.classList.add("famdiv")
         famDiv.style.backgroundColor = col;
-        familiesPage.appendChild(famDiv)
+        statsdiv.appendChild(famDiv)
         const genDiv = document.createElement('div')
         
         genDiv.classList.add("gendiv")
